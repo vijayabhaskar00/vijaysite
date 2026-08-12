@@ -53,9 +53,14 @@ for (const good of requiredStrings) {
   }
 }
 
-if (!html.includes('property="og:image"')) {
-  console.error("MISSING og:image meta tag");
-  failed = true;
+for (const file of htmlFiles) {
+  const filePath = join(outDir, file);
+  if (!existsSync(filePath)) continue; // already reported as MISSING above
+  const fileHtml = readFileSync(filePath, "utf8");
+  if (!fileHtml.includes('property="og:image"')) {
+    console.error(`MISSING og:image meta tag: ${file}`);
+    failed = true;
+  }
 }
 
 if (failed) {
