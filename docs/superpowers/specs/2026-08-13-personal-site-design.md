@@ -47,8 +47,8 @@ facts; nothing is fabricated to fill gaps.
 - No CMS/backend — this is a static, single-owner site with content in code.
 - No working contact form backend (no server available on GitHub Pages) —
   contact is a `mailto:` link plus real social links.
-- No blog engine on the new site — writing/blog content stays on the existing
-  Blogger blog; the new site links out to it from a `/writing` page.
+- No blog/writing section in this build (see Content decisions below —
+  the existing Blogger blog has zero real posts to link to).
 
 ## Content decisions (confirmed with site owner)
 
@@ -66,10 +66,14 @@ facts; nothing is fabricated to fill gaps.
 - **Photo:** reuse the existing Blogger-hosted profile photo
   (`blogger.googleusercontent.com/.../IMG_20161016_011116.jpg`) at its
   current resolution.
-- **Writing/"Author" positioning:** `/writing` page introduces this in his
-  own words and links out to the Blogger blog (URL: the blog feed found at
-  `blogger.com/feeds/7930706235641360655/posts/default` — resolve to the
-  human-facing blog URL during implementation).
+- **Writing/"Author" positioning:** dropped from this build. The Blogger
+  blog's feed was checked directly (`blogger.com/feeds/7930706235641360655/posts/default?alt=json`)
+  and returns `openSearch$totalResults: 0` — there are zero published posts.
+  Its "alternate" URL is `https://www.vijayabhaskar.in/`, i.e. the same
+  domain/site being replaced, not a separate archive. There is nothing real
+  to link to, so a `/writing` page is out of scope for this build. Revisit
+  once there's real writing content (a book, articles, a working blog) to
+  point to.
 
 ## Architecture
 
@@ -101,11 +105,10 @@ a one-pager where every section shares the homepage's metadata.
 | `/` | Hero + short intro + highlights, links into other pages |
 | `/about` | Full bio |
 | `/experience` | Employment (stuMagz, Tsearch.in) + credentials (ATAL Innovation Mission, Microsoft SharePoint) as a timeline — no fabricated skill-percentage bars |
-| `/writing` | Author positioning in his own words; links out to the Blogger blog |
 | `/contact` | `mailto:` link + Instagram/Facebook icons |
 
-Shared layout: header nav (Home / About / Experience / Writing / Contact),
-footer with copyright + social icons.
+Shared layout: header nav (Home / About / Experience / Contact), footer with
+copyright + social icons.
 
 ## Visual system — "Warm Regional Identity"
 
@@ -150,10 +153,3 @@ footer with copyright + social icons.
 - `next build` with `output: 'export'` succeeds with zero errors, confirming
   GitHub Pages compatibility (no server-only APIs used).
 
-## Open item for implementation time
-
-The Blogger blog's human-facing URL should be confirmed (the feed URL found
-during research is `blogger.com/feeds/7930706235641360655/posts/default`;
-the `/writing` page needs the actual blog homepage URL, likely
-`vijayabhaskar.in` itself pre-migration or a `blogspot.com` subdomain —
-verify before linking).
