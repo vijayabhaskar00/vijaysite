@@ -1,7 +1,15 @@
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 const outDir = "out";
+
+/** Recursively find every file under `dir` whose name matches `suffix`. */
+function findFiles(dir, suffix) {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir, { recursive: true })
+    .filter((entry) => entry.endsWith(suffix))
+    .map((entry) => join(dir, entry));
+}
 
 const requiredFiles = [
   "index.html",
@@ -24,6 +32,32 @@ const forbiddenStrings = [
 
 const requiredStrings = ["stuMagz", "Tsearch.in", "ATAL Innovation Mission", "SharePoint"];
 
+// Social platforms that must never appear anywhere in the shipped output.
+// Only Instagram and facebook.com/vijayabhaskarofficial are approved.
+const forbiddenSocialFragments = [
+  "twitter.com",
+  "x.com",
+  "linkedin.com",
+  "behance.net",
+  "youtube.com",
+  "plus.google.com",
+];
+
+// Design-token colors that must actually reach the compiled CSS (not just
+// tailwind.config.ts). Tailwind v3 emits color utilities as decimal
+// `rgb(r g b / <alpha>)`/`rgba(r,g,b,a)`, not literal hex, so we check for
+// the decimal triple rather than grepping for the hex string itself.
+const paletteColors = {
+  terracotta: "#c1512d",
+  ochre: "#b3792c",
+  teal: "#1f5c56",
+};
+
+function hexToRgbTriple(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
 let failed = false;
 
 for (const file of requiredFiles) {
@@ -33,11 +67,17 @@ for (const file of requiredFiles) {
   }
 }
 
-const htmlFiles = requiredFiles.filter((f) => f.endsWith(".html"));
-const html = htmlFiles
-  .filter((f) => existsSync(join(outDir, f)))
-  .map((f) => readFileSync(join(outDir, f), "utf8"))
-  .join("\n");
+// Discover every shipped HTML file (not just the hardcoded route list above)
+// so future pages, and the 404 page, are automatically covered by the
+// forbidden-string/required-fact/social checks below.
+const htmlFiles = findFiles(outDir, ".html");
+
+if (htmlFiles.length === 0) {
+  console.error("No HTML files found under out/ — did the build run?");
+  failed = true;
+}
+
+const html = htmlFiles.map((f) => readFileSync(f, "utf8")).join("\n");
 
 for (const bad of forbiddenStrings) {
   if (html.includes(bad)) {
@@ -53,13 +93,36 @@ for (const good of requiredStrings) {
   }
 }
 
+for (const fragment of forbiddenSocialFragments) {
+  if (html.toLowerCase().includes(fragment)) {
+    console.error(`FORBIDDEN SOCIAL PLATFORM REFERENCE FOUND: "${fragment}"`);
+    failed = true;
+  }
+}
+
 for (const file of htmlFiles) {
-  const filePath = join(outDir, file);
-  if (!existsSync(filePath)) continue; // already reported as MISSING above
-  const fileHtml = readFileSync(filePath, "utf8");
+  const fileHtml = readFileSync(file, "utf8");
   if (!fileHtml.includes('property="og:image"')) {
     console.error(`MISSING og:image meta tag: ${file}`);
     failed = true;
+  }
+}
+
+const cssFiles = findFiles(join(outDir, "_next", "static", "css"), ".css");
+if (cssFiles.length === 0) {
+  console.error("No compiled CSS files found under out/_next/static/css — did the build run?");
+  failed = true;
+} else {
+  const css = cssFiles.map((f) => readFileSync(f, "utf8")).join("\n");
+  for (const [name, hex] of Object.entries(paletteColors)) {
+    const [r, g, b] = hexToRgbTriple(hex);
+    const pattern = new RegExp(`${r}[,\\s]+${g}[,\\s]+${b}`);
+    if (!pattern.test(css)) {
+      console.error(
+        `DESIGN TOKEN MISSING FROM COMPILED CSS: ${name} (${hex}) never reaches the shipped stylesheet`
+      );
+      failed = true;
+    }
   }
 }
 
