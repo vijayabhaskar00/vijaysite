@@ -19,6 +19,16 @@ describe("buildMetadata", () => {
     });
     expect(meta.alternates?.canonical).toBe("https://vijayabhaskar.in/about");
   });
+
+  it("sets an absolute Open Graph image URL", () => {
+    const meta = buildMetadata({
+      title: "About",
+      description: "Bio.",
+      path: "/about",
+    });
+    const images = meta.openGraph?.images as { url: string }[] | undefined;
+    expect(images?.[0]?.url).toBe("https://vijayabhaskar.in/og-image.png");
+  });
 });
 
 describe("personJsonLd", () => {
