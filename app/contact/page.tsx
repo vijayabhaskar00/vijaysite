@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import { site, social } from "@/content/site";
+import { linkClass } from "@/lib/ui";
 
 export const metadata: Metadata = buildMetadata({
   title: "Contact",
@@ -10,15 +11,17 @@ export const metadata: Metadata = buildMetadata({
 
 export default function ContactPage() {
   return (
-    <section>
-      <h1 className="font-display">Contact</h1>
-      <p>
-        <a href={`mailto:${site.email}`}>{site.email}</a>
+    <section className="max-w-2xl py-14 sm:py-20">
+      <h1 className="font-display text-4xl text-ink sm:text-5xl">Contact</h1>
+      <p className="mt-6">
+        <a href={`mailto:${site.email}`} className={`text-lg ${linkClass}`}>
+          {site.email}
+        </a>
       </p>
-      <ul aria-label="Social links">
+      <ul aria-label="Social links" className="mt-8 flex list-none gap-x-8 p-0">
         {social.map((item) => (
           <li key={item.href}>
-            <a href={item.href} target="_blank" rel="noreferrer noopener">
+            <a href={item.href} target="_blank" rel="noreferrer noopener" className={linkClass}>
               {item.label}
             </a>
           </li>

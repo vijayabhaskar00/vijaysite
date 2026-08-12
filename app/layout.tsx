@@ -15,13 +15,13 @@ export const metadata: Metadata = buildMetadata({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${publicSans.variable}`}>
-      <body className="font-body bg-bg text-ink">
+      <body className="flex min-h-screen flex-col bg-bg font-body text-ink">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd()) }}
         />
         <Header />
-        <main>{children}</main>
+        <main className="mx-auto w-full max-w-5xl flex-1 px-6 sm:px-8">{children}</main>
         <Footer />
       </body>
     </html>

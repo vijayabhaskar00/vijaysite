@@ -12,15 +12,17 @@ export const metadata: Metadata = buildMetadata({
 function Timeline({ title, entries }: { title: string; entries: TimelineEntry[] }) {
   return (
     <div>
-      <h2 className="font-display">{title}</h2>
-      <ul>
+      <h2 className="font-display text-2xl text-ink sm:text-3xl">{title}</h2>
+      <ul className="mt-8 space-y-10 border-l-2 border-terracotta/25 pl-6 sm:pl-8">
         {entries.map((entry) => (
           <li key={`${entry.org}-${entry.period}`}>
-            <span>{entry.period}</span>
-            <h3>
+            <span className="inline-block rounded-full bg-ochre/15 px-3 py-1 text-sm font-medium text-ochre">
+              {entry.period}
+            </span>
+            <h3 className="mt-3 font-display text-xl text-ink">
               {entry.role} · {entry.org}
             </h3>
-            <p>{entry.description}</p>
+            <p className="mt-2 max-w-2xl text-ink/80">{entry.description}</p>
           </li>
         ))}
       </ul>
@@ -30,11 +32,15 @@ function Timeline({ title, entries }: { title: string; entries: TimelineEntry[] 
 
 export default function ExperiencePage() {
   return (
-    <section>
-      <h1 className="font-display">Experience</h1>
-      <Timeline title="Employment" entries={employment} />
-      <SectionDivider />
-      <Timeline title="Credentials" entries={credentials} />
+    <section className="py-14 sm:py-20">
+      <h1 className="font-display text-4xl text-ink sm:text-5xl">Experience</h1>
+      <div className="mt-12">
+        <Timeline title="Employment" entries={employment} />
+      </div>
+      <SectionDivider className="my-14 h-3 w-full text-ochre/60 md:h-4" />
+      <div>
+        <Timeline title="Credentials" entries={credentials} />
+      </div>
     </section>
   );
 }
