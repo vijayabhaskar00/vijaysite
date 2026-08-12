@@ -6,3 +6,16 @@ body {
   background-color: #fbf3e7;
   color: #2b211a;
 }
+
+.photo-frame {
+  overflow: hidden;
+  border-radius: 63% 37% 54% 46% / 43% 41% 59% 57%;
+  display: inline-block;
+}
+
+.photo-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
