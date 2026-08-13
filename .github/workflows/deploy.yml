@@ -25,6 +25,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          # Prefixes every asset URL with /vijaysite so the build works at
+          # the github.io project-page URL. Drop this once vijayabhaskar.in's
+          # DNS is live and GitHub Pages redirects that URL to the custom
+          # domain (see README).
+          NEXT_PUBLIC_BASE_PATH: /vijaysite
       - run: npm run verify:export
       - uses: actions/upload-pages-artifact@v3
         with:
