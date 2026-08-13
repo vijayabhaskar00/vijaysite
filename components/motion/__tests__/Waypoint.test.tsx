@@ -100,4 +100,56 @@ describe("Waypoint", () => {
       );
     });
   });
+
+  // A reduced-motion visitor must get zero scroll-linked animation at all
+  // (per docs/superpowers/specs/2026-08-13-3d-flythrough-motion-design.md:
+  // "every waypoint's content shown in place", not just "no 3D canvas").
+  // Found missing during Task 9's real-browser manual verification under
+  // `prefers-reduced-motion: reduce` emulation: the waypoints still rendered
+  // `opacity: 0; transform: translateY(40px)` pending scroll.
+  describe("reduceMotion prop", () => {
+    it("renders content with no hiding style when reduceMotion is true, even for a waypoint whose range hasn't been reached", async () => {
+      const progress = motionValue(0);
+      render(
+        <Waypoint range={[0.4, 0.6]} progress={progress} reduceMotion>
+          <p>About preview</p>
+        </Waypoint>
+      );
+      const node = screen.getByText("About preview").parentElement as HTMLElement;
+
+      // Give any effects a chance to run; there should be nothing to apply.
+      await waitFor(() => expect(node).toBeInTheDocument());
+      expect(node.getAttribute("style")).toBeNull();
+    });
+
+    it("never applies opacity or transform, even once scroll progress moves through and past the range", async () => {
+      const progress = motionValue(0);
+      render(
+        <Waypoint range={[0.4, 0.6]} progress={progress} reduceMotion>
+          <p>About preview</p>
+        </Waypoint>
+      );
+      const node = screen.getByText("About preview").parentElement as HTMLElement;
+
+      act(() => {
+        progress.set(1); // fully past the range -- would be opacity 1 / translateY(0) if reduceMotion were ignored
+      });
+
+      // No waitFor here: asserting a negative (nothing was ever written) has
+      // to be checked as a steady-state fact, not raced against a timeout.
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(node.getAttribute("style")).toBeNull();
+    });
+
+    it("never bakes opacity:0 into server-rendered markup regardless of reduceMotion", () => {
+      const progress = motionValue(0);
+      const html = renderToStaticMarkup(
+        <Waypoint range={[0.7, 0.9]} progress={progress} reduceMotion>
+          <p>Contact preview</p>
+        </Waypoint>
+      );
+      expect(html).toContain("Contact preview");
+      expect(html).not.toMatch(/opacity:\s*0/);
+    });
+  });
 });

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useScroll } from "framer-motion";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { resolveDeviceTier, type DeviceTier } from "./deviceTier";
+import { prefersReducedMotion, resolveDeviceTier, type DeviceTier } from "./deviceTier";
 import IntroOverlay from "./IntroOverlay";
 import Waypoint from "./Waypoint";
 import type { CameraKeyframe } from "./FlyPath";
@@ -31,6 +31,14 @@ export default function Flythrough({ hero }: FlythroughProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ["start start", "end end"] });
   const [tier, setTier] = useState<DeviceTier | null>(null);
+  // Resolved synchronously (not via framer-motion's own useReducedMotion(),
+  // which returns null during an ambiguous pre-settle window and would cause
+  // a brief incorrect flash) so waypoints never even attempt the scroll-linked
+  // fade for a reduced-motion visitor. Deliberately independent of `tier`:
+  // tier also collapses to "static" when WebGL2 is simply unavailable, which
+  // must NOT suppress the waypoint fade -- only an actual reduced-motion
+  // preference should. See docs/superpowers/specs/2026-08-13-3d-flythrough-motion-design.md.
+  const [reduceMotion] = useState(() => prefersReducedMotion());
 
   useEffect(() => {
     let cancelled = false;
@@ -54,7 +62,7 @@ export default function Flythrough({ hero }: FlythroughProps) {
       <div className="relative z-10">
         <div className="min-h-screen">{hero}</div>
 
-        <Waypoint range={[0.25, 0.45]} progress={scrollYProgress} className="min-h-screen py-24">
+        <Waypoint range={[0.25, 0.45]} progress={scrollYProgress} reduceMotion={reduceMotion} className="min-h-screen py-24">
           <p className="font-mono text-xs uppercase tracking-widest text-amber">About</p>
           <h2 className="mt-4 max-w-2xl text-balance font-display text-4xl font-bold uppercase text-paper sm:text-5xl">
             {site.tagline}
@@ -65,7 +73,7 @@ export default function Flythrough({ hero }: FlythroughProps) {
           </Link>
         </Waypoint>
 
-        <Waypoint range={[0.55, 0.75]} progress={scrollYProgress} className="min-h-screen py-24">
+        <Waypoint range={[0.55, 0.75]} progress={scrollYProgress} reduceMotion={reduceMotion} className="min-h-screen py-24">
           <p className="font-mono text-xs uppercase tracking-widest text-amber">Experience</p>
           <h2 className="mt-4 font-display text-4xl font-bold uppercase text-paper sm:text-5xl">
             {employment[0].role} · {employment[0].org}
@@ -78,7 +86,7 @@ export default function Flythrough({ hero }: FlythroughProps) {
           </Link>
         </Waypoint>
 
-        <Waypoint range={[0.85, 1]} progress={scrollYProgress} className="min-h-screen py-24">
+        <Waypoint range={[0.85, 1]} progress={scrollYProgress} reduceMotion={reduceMotion} className="min-h-screen py-24">
           <p className="font-mono text-xs uppercase tracking-widest text-amber">Contact</p>
           <h2 className="mt-4 font-display text-4xl font-bold uppercase text-paper sm:text-5xl">
             Get in touch.

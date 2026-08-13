@@ -8,6 +8,10 @@ interface WaypointProps {
   /** Scroll-progress range (0-1) over which this waypoint settles into place. */
   range: [number, number];
   progress: MotionValue<number>;
+  /** When true, content renders plainly in place with no scroll-linked
+   * opacity/transform at all -- per spec, reduced-motion means zero
+   * scroll-linked animation, not just "no 3D canvas". */
+  reduceMotion?: boolean;
   className?: string;
 }
 
@@ -15,7 +19,13 @@ interface WaypointProps {
 // stand-in there since nothing paints server-side anyway.
 const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-export default function Waypoint({ children, range, progress, className }: WaypointProps) {
+export default function Waypoint({
+  children,
+  range,
+  progress,
+  reduceMotion = false,
+  className,
+}: WaypointProps) {
   // Not applied until after mount -- see the file-level note in the plan/spec
   // for why this guards the no-JS/SSR-visible guarantee.
   const [mounted, setMounted] = useState(false);
@@ -38,18 +48,23 @@ export default function Waypoint({ children, range, progress, className }: Waypo
   // frame independently of the (broken) change-driven style binding, which is
   // what masked this for `y` while `opacity` stayed invisible. Applying
   // opacity imperatively via a ref sidesteps the broken binding entirely.
+  // Reduced-motion visitors get zero scroll-linked animation (per spec):
+  // content sits at its natural, fully-visible position, and opacity is
+  // never touched at all -- not even set to 1 -- same "no inline style ==
+  // visible" pattern already used pre-mount. The hook itself still has to be
+  // called unconditionally (rules of hooks); the guard is inside.
   const nodeRef = useRef<HTMLDivElement>(null);
   useMotionValueEvent(opacity, "change", (latest) => {
-    if (nodeRef.current) nodeRef.current.style.opacity = String(latest);
+    if (!reduceMotion && nodeRef.current) nodeRef.current.style.opacity = String(latest);
   });
   useIsomorphicLayoutEffect(() => {
-    if (mounted && nodeRef.current) {
+    if (mounted && !reduceMotion && nodeRef.current) {
       nodeRef.current.style.opacity = String(opacity.get());
     }
-  }, [mounted, opacity]);
+  }, [mounted, reduceMotion, opacity]);
 
   return (
-    <motion.div ref={nodeRef} className={className} style={mounted ? { y } : undefined}>
+    <motion.div ref={nodeRef} className={className} style={mounted && !reduceMotion ? { y } : undefined}>
       {children}
     </motion.div>
   );
