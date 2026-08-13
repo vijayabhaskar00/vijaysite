@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import Flythrough from "../Flythrough";
 
 // Real @react-three/fiber Canvas needs a real WebGL context and
@@ -12,6 +12,8 @@ import Flythrough from "../Flythrough";
 vi.mock("../SceneCanvas", () => ({
   default: () => <div data-testid="scene-canvas-stub" />,
 }));
+
+const originalGetBoundingClientRect = Element.prototype.getBoundingClientRect;
 
 beforeAll(() => {
   // jsdom returns an all-zero rect for every element, which is fine for
@@ -30,6 +32,10 @@ beforeAll(() => {
       bottom: 2000,
       toJSON: () => {},
     }) as DOMRect;
+});
+
+afterAll(() => {
+  Element.prototype.getBoundingClientRect = originalGetBoundingClientRect;
 });
 
 describe("Flythrough", () => {

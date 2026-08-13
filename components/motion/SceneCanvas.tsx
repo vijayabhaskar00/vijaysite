@@ -2,7 +2,7 @@
 
 import { Canvas } from "@react-three/fiber";
 import type { MotionValue } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import FlyPath, { type CameraKeyframe } from "./FlyPath";
 import type { DeviceTier } from "./deviceTier";
 
@@ -37,24 +37,18 @@ function ParticleField({ count }: { count: number }) {
 }
 
 export default function SceneCanvas({ progress, keyframes, tier }: SceneCanvasProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(true);
 
-  // Pause rendering (frameloop="never") when off-screen or the tab is
-  // hidden -- the canvas is a fixed full-viewport backdrop, so "off-screen"
-  // in practice means the user navigated away via the header nav without a
-  // full page reload being needed, or backgrounded the tab.
+  // Pause rendering (frameloop="never") when the tab is backgrounded --
+  // the one visibility signal that actually fires. The canvas is a fixed
+  // full-viewport backdrop, so it's always intersecting the viewport; an
+  // IntersectionObserver on it would never report off-screen (a Next.js
+  // route change unmounts this component entirely rather than scrolling it
+  // out of view), so there's nothing for it to usefully observe.
   useEffect(() => {
-    const node = containerRef.current;
-    if (!node || typeof IntersectionObserver === "undefined") return;
-    const observer = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting), {
-      threshold: 0,
-    });
-    observer.observe(node);
     const onVisibility = () => setActive(document.visibilityState === "visible");
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
-      observer.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
@@ -63,13 +57,12 @@ export default function SceneCanvas({ progress, keyframes, tier }: SceneCanvasPr
   const particleCount = tier === "full" ? 1200 : 400;
 
   return (
-    <div ref={containerRef} className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
+    <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
       <Canvas
         frameloop={active ? "demand" : "never"}
         dpr={dpr}
         camera={{ fov: 50, position: keyframes[0]?.position ?? [0, 0, 5] }}
       >
-        <ambientLight intensity={0.6} />
         <ParticleField count={particleCount} />
         <FlyPath progress={progress} keyframes={keyframes} />
       </Canvas>

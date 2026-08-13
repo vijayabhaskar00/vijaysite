@@ -17,8 +17,20 @@ interface FlyPathProps {
   keyframes: CameraKeyframe[];
 }
 
-function lerpVector(a: [number, number, number], b: [number, number, number], t: number): THREE.Vector3 {
-  return new THREE.Vector3(
+// Module-scope scratch vectors, mutated in place every frame instead of
+// allocating fresh THREE.Vector3 instances -- lerpVector runs twice per
+// frame inside useFrame below (position, lookAt), so a per-call `new`
+// creates GC churn in a loop that otherwise stays allocation-free.
+const scratchPosition = new THREE.Vector3();
+const scratchLookAt = new THREE.Vector3();
+
+function lerpVector(
+  target: THREE.Vector3,
+  a: [number, number, number],
+  b: [number, number, number],
+  t: number
+): THREE.Vector3 {
+  return target.set(
     a[0] + (b[0] - a[0]) * t,
     a[1] + (b[1] - a[1]) * t,
     a[2] + (b[2] - a[2]) * t
@@ -53,8 +65,8 @@ export default function FlyPath({ progress, keyframes }: FlyPathProps) {
     }
     const span = to.at - from.at || 1;
     const localT = Math.min(1, Math.max(0, (t - from.at) / span));
-    camera.position.copy(lerpVector(from.position, to.position, localT));
-    camera.lookAt(lerpVector(from.lookAt, to.lookAt, localT));
+    camera.position.copy(lerpVector(scratchPosition, from.position, to.position, localT));
+    camera.lookAt(lerpVector(scratchLookAt, from.lookAt, to.lookAt, localT));
   });
 
   return null;

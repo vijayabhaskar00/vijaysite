@@ -53,7 +53,7 @@ export default function Waypoint({
   // never touched at all -- not even set to 1 -- same "no inline style ==
   // visible" pattern already used pre-mount. The hook itself still has to be
   // called unconditionally (rules of hooks); the guard is inside.
-  const nodeRef = useRef<HTMLDivElement>(null);
+  const nodeRef = useRef<HTMLElement>(null);
   useMotionValueEvent(opacity, "change", (latest) => {
     if (!reduceMotion && nodeRef.current) nodeRef.current.style.opacity = String(latest);
   });
@@ -64,8 +64,8 @@ export default function Waypoint({
   }, [mounted, reduceMotion, opacity]);
 
   return (
-    <motion.div ref={nodeRef} className={className} style={mounted && !reduceMotion ? { y } : undefined}>
+    <motion.section ref={nodeRef} className={className} style={mounted && !reduceMotion ? { y } : undefined}>
       {children}
-    </motion.div>
+    </motion.section>
   );
 }
