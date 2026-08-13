@@ -18,7 +18,7 @@ function Timeline({ title, entries }: { title: string; entries: TimelineEntry[] 
       <ul className="mt-6 space-y-10 border-l-2 border-terracotta/25 pl-6 sm:pl-8">
         {entries.map((entry) => (
           <li key={`${entry.org}-${entry.period}`}>
-            <span className="tabular inline-block rounded-full bg-ochre/15 px-3 py-1 text-sm font-medium text-ochre">
+            <span className="inline-block rounded-full bg-ochre/15 px-3 py-1 text-sm font-medium tabular-nums text-ochre">
               {entry.period}
             </span>
             <h3 className="mt-3 font-display text-xl text-ink">
@@ -32,21 +32,22 @@ function Timeline({ title, entries }: { title: string; entries: TimelineEntry[] 
   );
 }
 
+const sections: { title: string; entries: TimelineEntry[] }[] = [
+  { title: "Employment", entries: employment },
+  { title: "Education", entries: education },
+  { title: "Credentials", entries: credentials },
+];
+
 export default function ExperiencePage() {
   return (
     <section className="py-14 sm:py-20">
       <h1 className="font-display text-4xl text-ink sm:text-5xl">Experience</h1>
-      <div className="mt-12">
-        <Timeline title="Employment" entries={employment} />
-      </div>
-      <SectionDivider className="my-14 h-3 w-full text-ochre/60 md:h-4" />
-      <div>
-        <Timeline title="Education" entries={education} />
-      </div>
-      <SectionDivider className="my-14 h-3 w-full text-ochre/60 md:h-4" />
-      <div>
-        <Timeline title="Credentials" entries={credentials} />
-      </div>
+      {sections.map((section, index) => (
+        <div key={section.title} className={index === 0 ? "mt-12" : undefined}>
+          {index > 0 && <SectionDivider className="my-14 h-3 w-full text-ochre/60 md:h-4" />}
+          <Timeline title={section.title} entries={section.entries} />
+        </div>
+      ))}
     </section>
   );
 }

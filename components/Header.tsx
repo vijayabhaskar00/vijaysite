@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { nav, site } from "@/content/site";
+import { navLinkClass } from "@/lib/ui";
 
 export default function Header() {
   return (
@@ -15,10 +16,7 @@ export default function Header() {
           <ul className="flex list-none flex-wrap items-center gap-x-7 gap-y-2 p-0 font-mono text-xs uppercase tracking-[0.15em]">
             {nav.map((item) => (
               <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="text-ink/70 transition-colors hover:text-terracotta focus-visible:text-terracotta focus-visible:underline focus-visible:outline-none"
-                >
+                <Link href={item.href} className={navLinkClass}>
                   {item.label}
                 </Link>
               </li>

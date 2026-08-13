@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import { site, social } from "@/content/site";
-import { linkClass } from "@/lib/ui";
+import { linkClass, navLinkClass } from "@/lib/ui";
 
 export const metadata: Metadata = buildMetadata({
   title: "Contact",
@@ -27,12 +27,7 @@ export default function ContactPage() {
       >
         {social.map((item) => (
           <li key={item.href}>
-            <a
-              href={item.href}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="text-ink/70 transition-colors hover:text-terracotta focus-visible:text-terracotta focus-visible:underline focus-visible:outline-none"
-            >
+            <a href={item.href} target="_blank" rel="noreferrer noopener" className={navLinkClass}>
               {item.label}
             </a>
           </li>

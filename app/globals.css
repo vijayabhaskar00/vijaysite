@@ -12,15 +12,12 @@ body {
   border-radius: 63% 37% 54% 46% / 43% 41% 59% 57%;
   display: inline-block;
   position: relative;
-}
-
-.photo-frame::after {
-  content: "";
-  position: absolute;
-  inset: -10px;
-  border-radius: inherit;
-  border: 2px solid rgb(179 121 44 / 0.5);
-  pointer-events: none;
+  /* box-shadow paints outside the box regardless of this element's own
+     overflow: hidden (unlike a ::after ring, which would be clipped by
+     it) — a gap ring in the page background, then a thin ochre ring. */
+  box-shadow:
+    0 0 0 6px #fbf3e7,
+    0 0 0 8px rgb(179 121 44 / 0.5);
 }
 
 .photo-frame img {
@@ -30,15 +27,12 @@ body {
   object-fit: cover;
 }
 
-/* Tabular numerals wherever digits line up: stats, timeline periods, dates. */
-.tabular {
-  font-variant-numeric: tabular-nums;
-}
-
 /* One orchestrated entrance on the homepage hero, not scattered effects.
    Guarded so it never applies when the visitor has asked for reduced
    motion — the element is fully visible by default either way, this only
-   adds the staggered fade-and-rise on top when motion is allowed. */
+   adds the staggered fade-and-rise on top when motion is allowed. Callers
+   stagger multiple elements with Tailwind's arbitrary-value syntax, e.g.
+   `reveal [animation-delay:160ms]`, rather than a family of named classes. */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes reveal-up {
     from {
@@ -53,21 +47,5 @@ body {
 
   .reveal {
     animation: reveal-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .reveal-delay-1 {
-    animation-delay: 0.08s;
-  }
-
-  .reveal-delay-2 {
-    animation-delay: 0.16s;
-  }
-
-  .reveal-delay-3 {
-    animation-delay: 0.24s;
-  }
-
-  .reveal-delay-4 {
-    animation-delay: 0.32s;
   }
 }

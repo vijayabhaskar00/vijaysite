@@ -1,3 +1,5 @@
+import { employment, credentials, education } from "./experience";
+
 export interface NavLink {
   label: string;
   href: string;
@@ -26,10 +28,16 @@ export interface StatEntry {
   label: string;
 }
 
+// Counts are derived from the actual timeline data, not hand-typed, so a
+// future edit to employment/credentials/education can't silently leave a
+// stale number on the homepage.
 export const stats: StatEntry[] = [
   { value: "2015", label: "Board member since" },
-  { value: "7", label: "Roles & credentials" },
-  { value: "2", label: "Academic degrees" },
+  {
+    value: String(employment.length + credentials.length + education.length),
+    label: "Roles & credentials",
+  },
+  { value: String(education.length), label: "Academic degrees" },
   { value: "HYD", label: "Based in Telangana" },
 ];
 

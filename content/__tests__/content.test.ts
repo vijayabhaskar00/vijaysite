@@ -93,16 +93,6 @@ describe("content integrity", () => {
     }
   });
 
-  it("stats that summarize other content stay in sync with it (drift guard)", () => {
-    const rolesAndCredentials = stats.find((s) => s.label === "Roles & credentials");
-    expect(rolesAndCredentials?.value).toBe(
-      String(employment.length + credentials.length + education.length)
-    );
-
-    const degrees = stats.find((s) => s.label === "Academic degrees");
-    expect(degrees?.value).toBe(String(education.length));
-  });
-
   it("site.email and site.baseUrl are correct", () => {
     expect(site.email).toBe("me@vijayabhaskar.in");
     expect(site.baseUrl).toBe("https://vijayabhaskar.in");

@@ -22,13 +22,13 @@ export default function HomePage() {
           className="reveal relative mx-auto w-52 md:mx-0 md:w-full"
         />
         <div className="relative">
-          <p className="reveal reveal-delay-1 font-display text-lg italic text-terracotta sm:text-xl">
+          <p className="reveal [animation-delay:80ms] font-display text-lg italic text-terracotta sm:text-xl">
             {site.tagline}
           </p>
-          <h1 className="reveal reveal-delay-2 mt-3 text-balance font-display text-5xl leading-[1.05] text-ink sm:text-6xl md:text-7xl">
+          <h1 className="reveal [animation-delay:160ms] mt-3 text-balance font-display text-5xl leading-[1.05] text-ink sm:text-6xl md:text-7xl">
             {site.name}
           </h1>
-          <p className="reveal reveal-delay-3 mt-6 max-w-xl text-lg leading-relaxed text-ink/80">
+          <p className="reveal [animation-delay:240ms] mt-6 max-w-xl text-lg leading-relaxed text-ink/80">
             {site.description}
           </p>
         </div>

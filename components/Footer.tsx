@@ -1,4 +1,5 @@
 import { site, social } from "@/content/site";
+import { navLinkClass } from "@/lib/ui";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -12,12 +13,7 @@ export default function Footer() {
         >
           {social.map((item) => (
             <li key={item.href}>
-              <a
-                href={item.href}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="text-ink/70 transition-colors hover:text-terracotta focus-visible:text-terracotta focus-visible:underline focus-visible:outline-none"
-              >
+              <a href={item.href} target="_blank" rel="noreferrer noopener" className={navLinkClass}>
                 {item.label}
               </a>
             </li>
