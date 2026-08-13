@@ -3,6 +3,7 @@ import { buildMetadata } from "@/lib/seo";
 import { site } from "@/content/site";
 import PhotoFrame from "@/components/PhotoFrame";
 import Reveal from "@/components/Reveal";
+import SplitText from "@/components/SplitText";
 
 export const metadata: Metadata = buildMetadata({
   title: "About",
@@ -26,7 +27,7 @@ export default function AboutPage() {
       <Reveal delayMs={120}>
         <p className="font-mono text-xs uppercase tracking-widest text-amber">About</p>
         <h1 className="mt-2 text-balance font-display text-4xl font-bold uppercase leading-tight text-paper sm:text-5xl">
-          Entrepreneur, mentor, and product designer.
+          <SplitText text="Entrepreneur, mentor, and product designer." staggerMs={10} />
         </h1>
         <p className="mt-8 max-w-2xl text-lg leading-relaxed text-mute">{site.description}</p>
         <p className="mt-6 max-w-2xl border-l-2 border-amber/40 pl-6 text-xl leading-relaxed text-paper/90">

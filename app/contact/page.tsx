@@ -3,6 +3,7 @@ import { buildMetadata } from "@/lib/seo";
 import { site, social } from "@/content/site";
 import { linkClass, navLinkClass } from "@/lib/ui";
 import Reveal from "@/components/Reveal";
+import SplitText from "@/components/SplitText";
 
 export const metadata: Metadata = buildMetadata({
   title: "Contact",
@@ -16,7 +17,7 @@ export default function ContactPage() {
       <Reveal>
         <p className="font-mono text-xs uppercase tracking-widest text-amber">Contact</p>
         <h1 className="mt-2 text-balance font-display text-4xl font-bold uppercase text-paper sm:text-5xl">
-          Get in touch.
+          <SplitText text="Get in touch." />
         </h1>
         <p className="mt-8">
           <a href={`mailto:${site.email}`} className={`text-lg ${linkClass}`}>

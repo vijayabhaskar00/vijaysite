@@ -4,6 +4,7 @@ import { employment, credentials, education, type TimelineEntry } from "@/conten
 import SectionDivider from "@/components/SectionDivider";
 import Reveal from "@/components/Reveal";
 import OrgMark from "@/components/OrgMark";
+import SplitText from "@/components/SplitText";
 
 export const metadata: Metadata = buildMetadata({
   title: "Experience",
@@ -47,7 +48,7 @@ export default function ExperiencePage() {
   return (
     <section className="py-14 sm:py-20">
       <h1 className="font-display text-4xl font-bold uppercase text-paper sm:text-5xl">
-        Experience
+        <SplitText text="Experience" />
       </h1>
       {sections.map((section, index) => (
         <div key={section.title} className={index === 0 ? "mt-12" : undefined}>

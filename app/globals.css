@@ -109,53 +109,6 @@ body {
   display: inline-block;
 }
 
-/* Custom cursor -- only ever mounted (and this class only ever applied) for
-   fine-pointer, motion-allowed visitors; see CustomCursor.tsx. Touch and
-   reduced-motion visitors never get `cursor: none` and keep the system
-   cursor. */
-.has-custom-cursor,
-.has-custom-cursor * {
-  cursor: none;
-}
-
-.cursor-dot,
-.cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 70;
-  border-radius: 9999px;
-  transform: translate3d(-100px, -100px, 0);
-  will-change: transform;
-}
-
-.cursor-dot {
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
-  background: #ffb020;
-}
-
-.cursor-ring {
-  width: 32px;
-  height: 32px;
-  margin: -16px 0 0 -16px;
-  border: 1px solid #f2f1ed;
-  transition:
-    width 0.25s ease,
-    height 0.25s ease,
-    margin 0.25s ease,
-    border-color 0.25s ease;
-}
-
-.cursor-ring--active {
-  width: 56px;
-  height: 56px;
-  margin: -28px 0 0 -28px;
-  border-color: #ffb020;
-}
-
 /* Animated underline sweep for text links (nav, footer, contact, inline
    body links) — a transform on a pseudo-element rather than a
    text-decoration toggle, so it can ease in and out instead of snapping.

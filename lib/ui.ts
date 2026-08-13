@@ -9,5 +9,6 @@ export const linkClass = `link-sweep text-signal ${focusRingClass}`;
 
 // Same focus-ring and underline-sweep mechanics as linkClass, styled for
 // the mono/uppercase wayfinding links (primary nav, footer/contact social
-// links) with a color shift layered on top instead of the signal hue.
-export const navLinkClass = `link-sweep text-mute transition-colors hover:text-amber focus-visible:text-amber ${focusRingClass}`;
+// links) with a color shift and a small upward lift layered on top instead
+// of the signal hue.
+export const navLinkClass = `link-sweep inline-block text-mute transition-[color,transform] duration-300 hover:text-amber focus-visible:text-amber motion-safe:hover:-translate-y-0.5 ${focusRingClass}`;
