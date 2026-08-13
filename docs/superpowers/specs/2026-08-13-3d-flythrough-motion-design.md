@@ -44,8 +44,10 @@ around.
 - Full mobile responsiveness.
 - A tiered rendering strategy so low-end/older devices get a fast, smooth
   experience — never a degraded, janky 3D one.
-- DOM motion upgrades from hand-rolled CSS to Framer Motion; Three.js and
-  Framer Motion are coordinated through one shared scroll-progress value.
+- New DOM motion (intro sequence, waypoint choreography) is built on
+  Framer Motion, coordinated with the Three.js camera through one shared
+  scroll-progress value. Existing, proven CSS motion is left in place
+  rather than rewritten for its own sake (see Migration below).
 - Every current guarantee holds: content fully visible without JS
   (progressive enhancement), `prefers-reduced-motion` respected, static
   export (`output: 'export'`) unchanged, and `scripts/verify-export.mjs`
@@ -129,22 +131,23 @@ where noted below).
 - `app/page.tsx` — restructured to compose Intro + hero + waypoints. Still
   fully server-rendered static HTML; the canvas/intro are client-only
   layers on top, not a replacement for the underlying markup.
-- `app/globals.css` — one additional CSS-only fallback rule set for the
-  Static tier (a depth/translate variant of the existing `reveal-scroll`
-  pattern), still fully contained inside the
-  `prefers-reduced-motion: no-preference` block.
 
 ### Migration of the existing CSS motion system
 
-- `Reveal` → becomes a thin wrapper around Framer Motion's `whileInView` +
-  `variants`, keeping its existing external API (`children`, `className`,
-  `delayMs`) unchanged, so `about/page.tsx`, `experience/page.tsx`,
-  `contact/page.tsx` need no call-site changes.
-- `.link-sweep`, `.marquee-track`, `.photo-frame` zoom — **stay CSS**.
-  They're small, already smooth, hover/loop-driven, and have no
-  scroll-coordination need — moving them to JS would add a dependency for
-  no behavioral gain. Only scroll-tied reveal/stagger and the new
-  waypoint/camera choreography move to Framer Motion.
+- `Reveal`, `.link-sweep`, `.marquee-track`, `.photo-frame` zoom — **stay
+  exactly as they are.** They're proven, tested, and load-bearing for the
+  no-JS/crawler-visible guarantee. (Framer Motion's `whileInView`/`animate`
+  bakes its target value into the very first render — including the
+  server-rendered, no-JS HTML — so a naive migration of `Reveal` would
+  ship `opacity: 0` as static markup and permanently hide content for
+  anyone without working JS. Reproducing today's safe behavior in Framer
+  Motion is possible but requires the same two-phase
+  mount-then-observe dance the current implementation already does
+  correctly in plain CSS, for zero user-visible gain.) Framer Motion is
+  used only for genuinely new motion that has no existing implementation
+  to put at risk: the intro sequence, waypoint content choreography, and
+  camera path. `about/page.tsx`, `experience/page.tsx`, `contact/page.tsx`,
+  `Header`, `Footer` are unaffected by this project.
 
 ### Progressive enhancement contract (re-verified, not weakened)
 
@@ -167,7 +170,15 @@ before any 3D code is fetched:
 |---|---|---|
 | **Full** | WebGL2 present, no low-end signal, FPS probe healthy | Full particle/wireframe scene, camera fly, DPR capped at 2 |
 | **Reduced** | WebGL present but a low-end signal (mobile UA, `deviceMemory`/`hardwareConcurrency` low, or borderline FPS probe) | Simplified geometry, DPR capped at 1, `frameloop="demand"` (redraw only on scroll, not a continuous 60fps loop) |
-| **Static** | No WebGL2, `prefers-reduced-motion`, or a failing FPS probe | **Three.js is never downloaded.** CSS-only parallax variant of the same fly-through feeling, using the existing `reveal-scroll` mechanism extended with a depth/translate dimension |
+| **Static** | No WebGL2, `prefers-reduced-motion`, or a failing FPS probe | **Three.js is never downloaded** — `SceneCanvas` simply isn't mounted |
+
+The tier only ever gates the Three.js/WebGL canvas. Waypoint content
+motion (fade/scale into place as the user scrolls) is driven by Framer
+Motion's `useTransform` against scroll progress on every tier, including
+Static — that's a cheap, GPU-accelerated `opacity`/`transform` animation,
+not a rendering cost worth tiering separately. This also means there's
+only one waypoint-motion implementation to build and maintain, not a
+parallel CSS system.
 
 Additional measures: canvas rendering pauses via `IntersectionObserver`
 (off-screen) and `visibilitychange` (tab hidden); the FPS probe runs for
