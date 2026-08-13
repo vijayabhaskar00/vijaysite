@@ -40,6 +40,7 @@ export default function FlyPath({ progress, keyframes }: FlyPathProps) {
   }, [progress, invalidate]);
 
   useFrame(() => {
+    if (sorted.length === 0) return;
     const t = progress.get();
     let from = sorted[0];
     let to = sorted[sorted.length - 1];
