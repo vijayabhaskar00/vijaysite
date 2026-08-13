@@ -49,13 +49,27 @@ export default function IntroOverlay({ enabled }: IntroOverlayProps) {
     document.body.style.overflow = "hidden";
     const start = performance.now();
 
+    // Percent reflects real critical-asset readiness (fonts), not just
+    // elapsed time -- but never blocks past the 1.5s cap on a stalled asset.
+    // Climbs toward ~95% from elapsed time alone while waiting, then jumps to
+    // 100% the instant fonts are confirmed ready, or force-finishes at the
+    // cap regardless of font state.
+    let fontsReady = !(typeof document !== "undefined" && "fonts" in document);
+    if (typeof document !== "undefined" && "fonts" in document) {
+      document.fonts.ready.then(() => {
+        fontsReady = true;
+      });
+    }
+
     const tick = () => {
       const elapsed = performance.now() - start;
-      setPercent(Math.min(100, Math.round((elapsed / MAX_DURATION_MS) * 100)));
-      if (elapsed < MAX_DURATION_MS) {
-        frameIdRef.current = requestAnimationFrame(tick);
-      } else {
+      const elapsedFraction = elapsed / MAX_DURATION_MS;
+      const displayFraction = fontsReady ? 1 : Math.min(elapsedFraction, 0.95);
+      setPercent(Math.round(displayFraction * 100));
+      if (fontsReady || elapsed >= MAX_DURATION_MS) {
         finish();
+      } else {
+        frameIdRef.current = requestAnimationFrame(tick);
       }
     };
     frameIdRef.current = requestAnimationFrame(tick);

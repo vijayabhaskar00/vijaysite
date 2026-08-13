@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useScroll } from "framer-motion";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { prefersReducedMotion, resolveDeviceTier, type DeviceTier } from "./deviceTier";
+import { detectWebGL2, prefersReducedMotion, resolveDeviceTier, type DeviceTier } from "./deviceTier";
 import IntroOverlay from "./IntroOverlay";
 import Waypoint from "./Waypoint";
 import type { CameraKeyframe } from "./FlyPath";
@@ -38,7 +38,14 @@ export default function Flythrough({ hero }: FlythroughProps) {
   // tier also collapses to "static" when WebGL2 is simply unavailable, which
   // must NOT suppress the waypoint fade -- only an actual reduced-motion
   // preference should. See docs/superpowers/specs/2026-08-13-3d-flythrough-motion-design.md.
-  const [reduceMotion] = useState(() => prefersReducedMotion());
+  const [reduceMotion, setReduceMotion] = useState(() => prefersReducedMotion());
+  // IntroOverlay only needs two synchronously-available signals -- WebGL2
+  // support and the reduced-motion preference -- neither of which requires
+  // waiting on the async tier probe below. Gating it on `canFly` instead
+  // would mount it well after first paint (the FPS probe alone takes several
+  // animation frames), so a first-time visitor would see the homepage flash
+  // before the intro slams over it -- the opposite of the intended ceremony.
+  const [introEnabled] = useState(() => !prefersReducedMotion() && detectWebGL2());
 
   useEffect(() => {
     let cancelled = false;
@@ -50,11 +57,27 @@ export default function Flythrough({ hero }: FlythroughProps) {
     };
   }, []);
 
+  // The CSS motion system elsewhere on the site responds to
+  // prefers-reduced-motion changing mid-session instantly (it's a plain media
+  // query); this keeps the scroll-linked waypoint fade in sync with that
+  // instead of freezing at whatever the preference was on first mount.
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onChange = () => setReduceMotion(mql.matches);
+    // Guard for environments (jsdom test mocks, very old Safari) whose
+    // MediaQueryList doesn't implement the standard listener methods --
+    // real browsers always do, so this only ever no-ops in those cases.
+    if (typeof mql.addEventListener !== "function") return;
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+
   const canFly = tier === "full" || tier === "reduced";
 
   return (
     <div ref={trackRef} className="relative">
-      <IntroOverlay enabled={canFly} />
+      <IntroOverlay enabled={introEnabled} />
       {canFly && tier && (
         <SceneCanvas progress={scrollYProgress} keyframes={KEYFRAMES} tier={tier} />
       )}
@@ -96,7 +119,10 @@ export default function Flythrough({ hero }: FlythroughProps) {
               {site.email}
             </a>
           </p>
-          <ul className="mt-6 flex list-none flex-wrap gap-x-6 gap-y-2 p-0 font-mono text-xs uppercase tracking-widest">
+          <ul
+            aria-label="Social links"
+            className="mt-6 flex list-none flex-wrap gap-x-6 gap-y-2 p-0 font-mono text-xs uppercase tracking-widest"
+          >
             {social.map((item) => (
               <li key={item.href}>
                 <a href={item.href} target="_blank" rel="noreferrer noopener" className={navLinkClass}>
@@ -105,6 +131,9 @@ export default function Flythrough({ hero }: FlythroughProps) {
               </li>
             ))}
           </ul>
+          <Link href="/contact" className={`mt-6 inline-block ${linkClass}`}>
+            View full contact →
+          </Link>
         </Waypoint>
       </div>
     </div>

@@ -6,6 +6,7 @@ export interface TierSignals {
   deviceMemory?: number;
   hardwareConcurrency?: number;
   avgFrameMs: number | null;
+  isMobile?: boolean;
 }
 
 /** Pure decision: what tier should this visitor get? No browser APIs here,
@@ -17,7 +18,7 @@ export function decideTier(signals: TierSignals): DeviceTier {
   const lowMemory = signals.deviceMemory !== undefined && signals.deviceMemory <= 2;
   const lowCores = signals.hardwareConcurrency !== undefined && signals.hardwareConcurrency <= 2;
   const badFrame = signals.avgFrameMs !== null && signals.avgFrameMs > 33; // worse than ~30fps
-  if (lowMemory || lowCores || badFrame) {
+  if (lowMemory || lowCores || badFrame || signals.isMobile) {
     return "reduced";
   }
   return "full";
@@ -38,6 +39,19 @@ export function prefersReducedMotion(): boolean {
     return false;
   }
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+/** A media-query-based mobile/touch signal -- more robust than user-agent
+ * sniffing, and the spec's tiering table's "mobile UA" reduced-tier trigger
+ * that decideTier otherwise has no way to see. Deliberately not UA-based:
+ * iOS never exposes deviceMemory and typical mobile hardwareConcurrency
+ * (4-8) overlaps with plenty of desktops, so without this most phones would
+ * land in "full" -- the heaviest rendering path. */
+export function isCoarsePointerOrNarrowViewport(): boolean {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+    return false;
+  }
+  return window.matchMedia("(pointer: coarse), (max-width: 768px)").matches;
 }
 
 /** Samples real frame timing for under a second so a bad result downgrades
@@ -71,8 +85,14 @@ export function measureAvgFrameMs(sampleCount = 10): Promise<number> {
 export async function resolveDeviceTier(): Promise<DeviceTier> {
   const reducedMotion = prefersReducedMotion();
   const hasWebGL2 = detectWebGL2();
+  const isMobile = isCoarsePointerOrNarrowViewport();
   if (reducedMotion || !hasWebGL2) {
-    return decideTier({ hasWebGL2, prefersReducedMotion: reducedMotion, avgFrameMs: null });
+    return decideTier({
+      hasWebGL2,
+      prefersReducedMotion: reducedMotion,
+      avgFrameMs: null,
+      isMobile,
+    });
   }
   const nav =
     typeof navigator !== "undefined"
@@ -85,5 +105,6 @@ export async function resolveDeviceTier(): Promise<DeviceTier> {
     deviceMemory: nav?.deviceMemory,
     hardwareConcurrency: nav?.hardwareConcurrency,
     avgFrameMs,
+    isMobile,
   });
 }
