@@ -21,7 +21,7 @@ function Timeline({ title, entries }: { title: string; entries: TimelineEntry[] 
             <span className="inline-block font-mono text-sm tabular-nums text-amber">
               {entry.period}
             </span>
-            <h3 className="mt-3 font-display text-xl uppercase text-paper">
+            <h3 className="mt-3 font-display text-xl font-bold uppercase text-paper">
               {entry.role} · {entry.org}
             </h3>
             <p className="mt-2 max-w-2xl text-mute">{entry.description}</p>
@@ -41,7 +41,9 @@ const sections: { title: string; entries: TimelineEntry[] }[] = [
 export default function ExperiencePage() {
   return (
     <section className="py-14 sm:py-20">
-      <h1 className="font-display text-4xl uppercase text-paper sm:text-5xl">Experience</h1>
+      <h1 className="font-display text-4xl font-bold uppercase text-paper sm:text-5xl">
+        Experience
+      </h1>
       {sections.map((section, index) => (
         <div key={section.title} className={index === 0 ? "mt-12" : undefined}>
           {index > 0 && <SectionDivider className="my-14" />}

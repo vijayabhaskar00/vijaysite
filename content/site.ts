@@ -41,6 +41,13 @@ export const stats: StatEntry[] = [
   { value: "HYD", label: "Based in Telangana" },
 ];
 
+// Unique organization names across every timeline entry, in the order
+// they first appear — feeds the homepage credentials ticker. Derived
+// rather than hand-typed so it can't drift from the source data.
+export const orgNames: string[] = Array.from(
+  new Set([...employment, ...credentials, ...education].map((entry) => entry.org))
+);
+
 export const site = {
   name: "Vijaya Bhaskar Jatoth",
   shortName: "Vijaya Bhaskar",

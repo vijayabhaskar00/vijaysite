@@ -18,11 +18,11 @@ export default function AboutPage() {
         width={site.photo.width}
         height={site.photo.height}
         loading="eager"
-        className="mx-auto h-40 w-40 md:mx-0 md:h-full md:w-full"
+        className="mx-auto h-40 w-40 md:mx-0 md:h-48 md:w-48"
       />
       <div>
         <p className="font-mono text-xs uppercase tracking-widest text-amber">About</p>
-        <h1 className="mt-2 text-balance font-display text-4xl uppercase leading-tight text-paper sm:text-5xl">
+        <h1 className="mt-2 text-balance font-display text-4xl font-bold uppercase leading-tight text-paper sm:text-5xl">
           Entrepreneur, mentor, and product designer.
         </h1>
         <p className="mt-8 max-w-2xl text-lg leading-relaxed text-mute">{site.description}</p>

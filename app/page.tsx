@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { site, nav } from "@/content/site";
-import { employment, credentials, education } from "@/content/experience";
+import { site, nav, orgNames } from "@/content/site";
 import PhotoFrame from "@/components/PhotoFrame";
 import SectionDivider from "@/components/SectionDivider";
 import StatBand from "@/components/StatBand";
@@ -9,9 +8,6 @@ import { linkClass } from "@/lib/ui";
 
 export default function HomePage() {
   const exploreLinks = nav.filter((item) => item.href !== "/");
-  const orgNames = Array.from(
-    new Set([...employment, ...credentials, ...education].map((entry) => entry.org))
-  );
 
   return (
     <>
@@ -45,7 +41,7 @@ export default function HomePage() {
       <SectionDivider />
 
       <nav aria-label="Explore" className="py-12 md:py-16">
-        <ul className="flex list-none flex-wrap gap-x-10 gap-y-4 p-0 font-display text-2xl uppercase">
+        <ul className="flex list-none flex-wrap gap-x-10 gap-y-4 p-0 font-display text-2xl font-bold uppercase">
           {exploreLinks.map((item) => (
             <li key={item.href}>
               <Link href={item.href} className={linkClass}>

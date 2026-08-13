@@ -13,7 +13,7 @@ export default function ContactPage() {
   return (
     <section className="max-w-2xl py-14 sm:py-20">
       <p className="font-mono text-xs uppercase tracking-widest text-amber">Contact</p>
-      <h1 className="mt-2 text-balance font-display text-4xl uppercase text-paper sm:text-5xl">
+      <h1 className="mt-2 text-balance font-display text-4xl font-bold uppercase text-paper sm:text-5xl">
         Get in touch.
       </h1>
       <p className="mt-8">

@@ -60,6 +60,8 @@ const paletteColors = {
   paper: "#f2f1ed",
   amber: "#ffb020",
   signal: "#5b8cff",
+  mute: "#8b8b90",
+  line: "#232326",
 };
 
 function hexToRgbTriple(hex) {

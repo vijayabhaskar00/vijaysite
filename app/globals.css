@@ -9,7 +9,10 @@ body {
 
 /* Grayscale-to-color reveal on hover — a small, deliberate interaction
    detail rather than a decorative frame; the portrait is a supporting
-   element in this layout, not the hero. */
+   element in this layout, not the hero. Hover-only: this is a pure color
+   shift with no content hidden or revealed, so it doesn't need a keyboard
+   equivalent — nothing here is a focus target (a bare <img>), so no
+   :focus-within rule is written for it. */
 .photo-frame {
   overflow: hidden;
   display: inline-block;
@@ -25,17 +28,13 @@ body {
   transition: filter 0.5s ease;
 }
 
-.photo-frame:hover img,
-.photo-frame:focus-within img {
+.photo-frame:hover img {
   filter: grayscale(0);
 }
 
-/* One orchestrated entrance on the homepage hero, not scattered effects.
-   Guarded so it never applies when the visitor has asked for reduced
-   motion — the element is fully visible by default either way, this only
-   adds the staggered fade-and-rise on top when motion is allowed. Callers
-   stagger multiple elements with Tailwind's arbitrary-value syntax, e.g.
-   `reveal [animation-delay:160ms]`, rather than a family of named classes. */
+/* Motion, gated behind prefers-reduced-motion in one shared block. Both
+   elements are fully visible/static by default; this only adds the
+   entrance stagger and the ticker loop on top when motion is allowed. */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes reveal-up {
     from {
@@ -48,8 +47,31 @@ body {
     }
   }
 
+  /* Longhand properties only — deliberately NOT the `animation` shorthand.
+     The shorthand implicitly resets animation-delay to 0, which silently
+     cancelled every per-element `[animation-delay:Nms]` stagger callers
+     set via Tailwind arbitrary values (verified: the shorthand rule sits
+     after those utility classes in the compiled stylesheet, so it won on
+     cascade order). Longhand here touches duration/name/easing/fill-mode
+     only, leaving animation-delay entirely to the caller. */
   .reveal {
-    animation: reveal-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-name: reveal-up;
+    animation-duration: 0.7s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    animation-fill-mode: both;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .marquee-track {
+    animation: marquee 32s linear infinite;
   }
 }
 
@@ -65,20 +87,5 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .marquee-copy-2 {
     display: none;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
-  }
-
-  .marquee-track {
-    animation: marquee 32s linear infinite;
   }
 }
