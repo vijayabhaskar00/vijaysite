@@ -30,15 +30,23 @@ const forbiddenStrings = [
   "Born in India - Proud Indian",
 ];
 
-const requiredStrings = ["stuMagz", "Tsearch.in", "ATAL Innovation Mission", "SharePoint"];
+const requiredStrings = [
+  "stuMagz",
+  "Tsearch.in",
+  "ATAL Innovation Mission",
+  "SharePoint",
+  "Manipal Academy of Higher Education",
+  "Mahatma Gandhi Institute of Technology",
+  "Student Tribe",
+];
 
 // Social platforms that must never appear anywhere in the shipped output.
-// Only Instagram and facebook.com/vijayabhaskarofficial are approved.
+// Only Instagram, Facebook (vijayabhaskarofficial), and Behance
+// (jatothvijayabhaskar — his real, verified portfolio profile) are approved.
 const forbiddenSocialFragments = [
   "twitter.com",
   "x.com",
   "linkedin.com",
-  "behance.net",
   "youtube.com",
   "plus.google.com",
 ];
@@ -51,6 +59,7 @@ const paletteColors = {
   terracotta: "#c1512d",
   ochre: "#b3792c",
   teal: "#1f5c56",
+  night: "#221a14",
 };
 
 function hexToRgbTriple(hex) {

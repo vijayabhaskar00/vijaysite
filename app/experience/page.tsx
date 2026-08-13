@@ -1,22 +1,24 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
-import { employment, credentials, type TimelineEntry } from "@/content/experience";
+import { employment, credentials, education, type TimelineEntry } from "@/content/experience";
 import SectionDivider from "@/components/SectionDivider";
 
 export const metadata: Metadata = buildMetadata({
   title: "Experience",
-  description: "Employment history and credentials for Vijaya Bhaskar Jatoth.",
+  description: "Employment history, education, and credentials for Vijaya Bhaskar Jatoth.",
   path: "/experience",
 });
 
 function Timeline({ title, entries }: { title: string; entries: TimelineEntry[] }) {
   return (
     <div>
-      <h2 className="font-display text-2xl text-ink sm:text-3xl">{title}</h2>
-      <ul className="mt-8 space-y-10 border-l-2 border-terracotta/25 pl-6 sm:pl-8">
+      <h2 className="font-mono text-xs font-normal uppercase tracking-widest text-terracotta">
+        {title}
+      </h2>
+      <ul className="mt-6 space-y-10 border-l-2 border-terracotta/25 pl-6 sm:pl-8">
         {entries.map((entry) => (
           <li key={`${entry.org}-${entry.period}`}>
-            <span className="inline-block rounded-full bg-ochre/15 px-3 py-1 text-sm font-medium text-ochre">
+            <span className="tabular inline-block rounded-full bg-ochre/15 px-3 py-1 text-sm font-medium text-ochre">
               {entry.period}
             </span>
             <h3 className="mt-3 font-display text-xl text-ink">
@@ -36,6 +38,10 @@ export default function ExperiencePage() {
       <h1 className="font-display text-4xl text-ink sm:text-5xl">Experience</h1>
       <div className="mt-12">
         <Timeline title="Employment" entries={employment} />
+      </div>
+      <SectionDivider className="my-14 h-3 w-full text-ochre/60 md:h-4" />
+      <div>
+        <Timeline title="Education" entries={education} />
       </div>
       <SectionDivider className="my-14 h-3 w-full text-ochre/60 md:h-4" />
       <div>

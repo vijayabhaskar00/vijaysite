@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildMetadata, personJsonLd } from "../seo";
+import { social } from "@/content/site";
 
 describe("buildMetadata", () => {
   it("appends the site name to the title", () => {
@@ -36,9 +37,6 @@ describe("personJsonLd", () => {
     const json = personJsonLd();
     expect(json["@type"]).toBe("Person");
     expect(json.name).toBe("Vijaya Bhaskar Jatoth");
-    expect(json.sameAs).toEqual([
-      "https://www.instagram.com/vijayabhaskarjatoth/",
-      "https://www.facebook.com/vijayabhaskarofficial",
-    ]);
+    expect(json.sameAs).toEqual(social.map((s) => s.href));
   });
 });

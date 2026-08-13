@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <section className="py-24 text-center sm:py-32">
-      <p className="font-display text-sm uppercase tracking-widest text-terracotta">404</p>
+      <p className="font-mono text-sm uppercase tracking-widest text-terracotta">404</p>
       <h1 className="mt-3 font-display text-4xl text-ink sm:text-5xl">Page not found</h1>
       <p className="mx-auto mt-4 max-w-md text-ink/80">
         The page you&rsquo;re looking for doesn&rsquo;t exist or has moved.

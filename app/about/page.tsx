@@ -21,8 +21,15 @@ export default function AboutPage() {
         className="mx-auto w-48 md:mx-0 md:w-full"
       />
       <div>
-        <h1 className="font-display text-4xl text-ink sm:text-5xl">About</h1>
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink/80">{site.description}</p>
+        <p className="font-mono text-xs uppercase tracking-widest text-terracotta">About</p>
+        <h1 className="mt-2 text-balance font-display text-4xl text-ink sm:text-5xl">
+          Entrepreneur, mentor, and product designer.
+        </h1>
+        <p className="mt-8 max-w-2xl text-lg leading-relaxed text-ink/80">{site.description}</p>
+        <p className="mt-6 max-w-2xl border-l-2 border-terracotta/40 pl-6 font-display text-xl italic leading-relaxed text-ink/90">
+          &ldquo;{site.tagline}&rdquo; &mdash; based in {site.location}, working across education,
+          innovation mentorship, and product design.
+        </p>
       </div>
     </section>
   );

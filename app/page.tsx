@@ -3,6 +3,7 @@ import { site, nav } from "@/content/site";
 import PhotoFrame from "@/components/PhotoFrame";
 import SectionDivider from "@/components/SectionDivider";
 import Texture from "@/components/Texture";
+import StatBand from "@/components/StatBand";
 import { linkClass } from "@/lib/ui";
 
 export default function HomePage() {
@@ -10,24 +11,30 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="relative grid gap-10 pb-16 pt-14 sm:pt-20 md:grid-cols-[minmax(0,220px)_1fr] md:items-center md:gap-16 md:pb-24 md:pt-28">
-        <Texture className="pointer-events-none absolute -left-10 -top-10 -z-10 h-56 w-56 text-ochre/20 md:h-72 md:w-72" />
+      <section className="relative grid gap-10 pb-16 pt-16 sm:pt-24 md:grid-cols-[minmax(0,260px)_1fr] md:items-center md:gap-16 md:pb-24 md:pt-32">
+        <Texture className="pointer-events-none absolute -left-14 -top-14 -z-10 h-64 w-64 text-ochre/25 md:h-80 md:w-80" />
         <PhotoFrame
           src={site.photo.src}
           alt={site.photo.alt}
           width={site.photo.width}
           height={site.photo.height}
           loading="eager"
-          className="relative mx-auto w-48 md:mx-0 md:w-full"
+          className="reveal relative mx-auto w-52 md:mx-0 md:w-full"
         />
         <div className="relative">
-          <p className="font-display text-lg text-terracotta sm:text-xl">{site.tagline}</p>
-          <h1 className="mt-2 font-display text-4xl leading-tight text-ink sm:text-5xl">
+          <p className="reveal reveal-delay-1 font-display text-lg italic text-terracotta sm:text-xl">
+            {site.tagline}
+          </p>
+          <h1 className="reveal reveal-delay-2 mt-3 text-balance font-display text-5xl leading-[1.05] text-ink sm:text-6xl md:text-7xl">
             {site.name}
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink/80">{site.description}</p>
+          <p className="reveal reveal-delay-3 mt-6 max-w-xl text-lg leading-relaxed text-ink/80">
+            {site.description}
+          </p>
         </div>
       </section>
+
+      <StatBand />
 
       <SectionDivider className="h-3 w-full text-terracotta/70 md:h-4" />
 

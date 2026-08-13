@@ -10,6 +10,7 @@ const config: Config = {
         terracotta: "#C1512D",
         ochre: "#B3792C",
         teal: "#1F5C56",
+        night: "#221A14",
       },
       fontFamily: {
         display: ["var(--font-fraunces)", "serif"],

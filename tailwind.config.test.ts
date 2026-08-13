@@ -9,6 +9,7 @@ describe("tailwind design tokens", () => {
     expect(colors.terracotta).toBe("#C1512D");
     expect(colors.ochre).toBe("#B3792C");
     expect(colors.teal).toBe("#1F5C56");
+    expect(colors.night).toBe("#221A14");
   });
 
   it("defines display/body font families backed by CSS variables", () => {

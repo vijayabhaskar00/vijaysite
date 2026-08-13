@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { site, nav, social } from "../site";
-import { employment, credentials } from "../experience";
+import { site, nav, social, stats } from "../site";
+import { employment, credentials, education } from "../experience";
 
 const FORBIDDEN = [
   "XXXXX",
@@ -12,7 +12,7 @@ const FORBIDDEN = [
 
 describe("content integrity", () => {
   it("has no forbidden placeholder/template strings", () => {
-    const blob = JSON.stringify({ site, nav, social, employment, credentials });
+    const blob = JSON.stringify({ site, nav, social, stats, employment, credentials, education });
     for (const bad of FORBIDDEN) {
       expect(blob).not.toContain(bad);
     }
@@ -22,6 +22,7 @@ describe("content integrity", () => {
     expect(social).toEqual([
       { label: "Instagram", href: "https://www.instagram.com/vijayabhaskarjatoth/" },
       { label: "Facebook", href: "https://www.facebook.com/vijayabhaskarofficial" },
+      { label: "Behance", href: "https://www.behance.net/jatothvijayabhaskar" },
     ]);
   });
 
@@ -36,20 +37,23 @@ describe("content integrity", () => {
     expect(nav.map((n) => n.href)).toEqual(["/", "/about", "/experience", "/contact"]);
   });
 
-  it("employment and credentials only reference verified organizations", () => {
+  it("employment, credentials, and education only reference verified organizations", () => {
     const allowedOrgs = [
       "stuMagz",
       "Tsearch.in",
       "ATAL Innovation Mission, Niti Aayog – GOI",
       "Microsoft",
+      "Behance",
+      "Manipal Academy of Higher Education",
+      "Mahatma Gandhi Institute of Technology",
     ];
-    for (const entry of [...employment, ...credentials]) {
+    for (const entry of [...employment, ...credentials, ...education]) {
       expect(allowedOrgs).toContain(entry.org);
       expect(entry.description.length).toBeGreaterThan(0);
     }
   });
 
-  it("employment and credentials descriptions do not introduce unapproved organizations", () => {
+  it("employment, credentials, and education descriptions do not introduce unapproved organizations", () => {
     // entry.org is checked against the allowlist above, but that check does
     // nothing to guard free-text `description` fields — a prior whole-branch
     // review found this was exactly the gap that let an org name ship
@@ -59,16 +63,18 @@ describe("content integrity", () => {
     //
     // "Manipal University" is a confirmed-accurate credential mention (site
     // owner confirmed Vijaya Bhaskar Jatoth serves as Chief Academic Advisor
-    // there) — it just isn't one of the four formal employer/credential
-    // entries tracked by `allowedOrgs` above, which lists board/employment
-    // and credential-issuing organizations, not every institution mentioned
-    // in passing. It's excluded from the unapproved-organization scan below
-    // by design, permanently, not as a pending exclusion.
-    const approvedNonEmployerMentions = ["Manipal University"];
+    // there) — it just isn't one of the formal employer/credential entries
+    // tracked by `allowedOrgs` above, which lists board/employment and
+    // credential-issuing organizations, not every institution mentioned in
+    // passing. It's excluded from the unapproved-organization scan below by
+    // design, permanently, not as a pending exclusion. "Student Tribe" is
+    // the confirmed current rebrand of stuMagz (same organization), so a
+    // description naming both is describing one entity, not introducing a
+    // second one.
+    const approvedNonEmployerMentions = ["Manipal University", "Student Tribe"];
     const unapprovedOrgNames = [
       "Twitter",
       "LinkedIn",
-      "Behance",
       "YouTube",
       "Google+",
       "Google",
@@ -76,7 +82,7 @@ describe("content integrity", () => {
       "Websoham",
       "Gooyaabi",
     ];
-    for (const entry of [...employment, ...credentials]) {
+    for (const entry of [...employment, ...credentials, ...education]) {
       let description = entry.description;
       for (const approved of approvedNonEmployerMentions) {
         description = description.split(approved).join("");
@@ -85,6 +91,16 @@ describe("content integrity", () => {
         expect(description).not.toContain(bad);
       }
     }
+  });
+
+  it("stats that summarize other content stay in sync with it (drift guard)", () => {
+    const rolesAndCredentials = stats.find((s) => s.label === "Roles & credentials");
+    expect(rolesAndCredentials?.value).toBe(
+      String(employment.length + credentials.length + education.length)
+    );
+
+    const degrees = stats.find((s) => s.label === "Academic degrees");
+    expect(degrees?.value).toBe(String(education.length));
   });
 
   it("site.email and site.baseUrl are correct", () => {
@@ -110,7 +126,7 @@ describe("content integrity", () => {
     }
 
     const strings: string[] = [];
-    collectStrings({ site, nav, social, employment, credentials }, strings);
+    collectStrings({ site, nav, social, stats, employment, credentials, education }, strings);
 
     for (const str of strings) {
       expect(str).not.toContain(OLD_DOB);
