@@ -15,12 +15,17 @@ export default function IntroOverlay({ enabled }: IntroOverlayProps) {
   const [visible, setVisible] = useState(false);
   const [percent, setPercent] = useState(0);
   const finishedRef = useRef(false);
+  const frameIdRef = useRef<number | undefined>();
 
   const finish = useCallback(() => {
     if (finishedRef.current) return;
     finishedRef.current = true;
+    if (frameIdRef.current !== undefined) {
+      cancelAnimationFrame(frameIdRef.current);
+    }
     setVisible(false);
     document.body.style.overflow = "";
+    window.removeEventListener("keydown", finish);
     try {
       window.sessionStorage.setItem(SESSION_KEY, "1");
     } catch {
@@ -43,22 +48,23 @@ export default function IntroOverlay({ enabled }: IntroOverlayProps) {
     setVisible(true);
     document.body.style.overflow = "hidden";
     const start = performance.now();
-    let frame: number;
 
     const tick = () => {
       const elapsed = performance.now() - start;
       setPercent(Math.min(100, Math.round((elapsed / MAX_DURATION_MS) * 100)));
       if (elapsed < MAX_DURATION_MS) {
-        frame = requestAnimationFrame(tick);
+        frameIdRef.current = requestAnimationFrame(tick);
       } else {
         finish();
       }
     };
-    frame = requestAnimationFrame(tick);
+    frameIdRef.current = requestAnimationFrame(tick);
     window.addEventListener("keydown", finish);
 
     return () => {
-      cancelAnimationFrame(frame);
+      if (frameIdRef.current !== undefined) {
+        cancelAnimationFrame(frameIdRef.current);
+      }
       document.body.style.overflow = "";
       window.removeEventListener("keydown", finish);
     };
