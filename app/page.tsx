@@ -4,6 +4,8 @@ import SectionDivider from "@/components/SectionDivider";
 import StatBand from "@/components/StatBand";
 import Marquee from "@/components/Marquee";
 import Reveal from "@/components/Reveal";
+import SplitText from "@/components/SplitText";
+import OrgLogoGrid from "@/components/OrgLogoGrid";
 import Flythrough from "@/components/motion/Flythrough";
 
 export default function HomePage() {
@@ -13,8 +15,8 @@ export default function HomePage() {
         <p className="reveal font-mono text-xs uppercase tracking-[0.2em] text-amber">
           {site.location} — {site.tagline}
         </p>
-        <h1 className="reveal [animation-delay:80ms] mt-4 text-balance font-display text-[clamp(2.75rem,9vw,7.5rem)] font-black uppercase leading-[0.9] text-paper">
-          {site.name}
+        <h1 className="mt-4 text-balance font-display text-[clamp(2.75rem,9vw,7.5rem)] font-black uppercase leading-[0.9] text-paper">
+          <SplitText text={site.name} baseDelayMs={80} staggerMs={18} />
         </h1>
         <div className="reveal [animation-delay:200ms] mt-8 flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
           <p className="max-w-xl text-lg leading-relaxed text-mute">{site.description}</p>
@@ -36,6 +38,15 @@ export default function HomePage() {
 
       <Reveal>
         <StatBand />
+      </Reveal>
+
+      <Reveal className="py-14 sm:py-20">
+        <p className="font-mono text-xs uppercase tracking-widest text-mute">
+          Affiliations &amp; credentials
+        </p>
+        <div className="mt-6">
+          <OrgLogoGrid />
+        </div>
       </Reveal>
 
       <SectionDivider />

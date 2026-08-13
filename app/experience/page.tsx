@@ -3,6 +3,7 @@ import { buildMetadata } from "@/lib/seo";
 import { employment, credentials, education, type TimelineEntry } from "@/content/experience";
 import SectionDivider from "@/components/SectionDivider";
 import Reveal from "@/components/Reveal";
+import OrgMark from "@/components/OrgMark";
 
 export const metadata: Metadata = buildMetadata({
   title: "Experience",
@@ -18,14 +19,17 @@ function Timeline({ title, entries }: { title: string; entries: TimelineEntry[] 
       </h2>
       <ul className="mt-6 space-y-10 border-l border-line pl-6 sm:pl-8">
         {entries.map((entry) => (
-          <li key={`${entry.org}-${entry.period}`}>
-            <span className="inline-block font-mono text-sm tabular-nums text-amber">
-              {entry.period}
-            </span>
-            <h3 className="mt-3 font-display text-xl font-bold uppercase text-paper">
-              {entry.role} · {entry.org}
-            </h3>
-            <p className="mt-2 max-w-2xl text-mute">{entry.description}</p>
+          <li key={`${entry.org}-${entry.period}`} className="flex gap-4">
+            <OrgMark org={entry.org} className="h-12 w-12 shrink-0" />
+            <div>
+              <span className="inline-block font-mono text-sm tabular-nums text-amber">
+                {entry.period}
+              </span>
+              <h3 className="mt-1 font-display text-xl font-bold uppercase text-paper">
+                {entry.role} · {entry.org}
+              </h3>
+              <p className="mt-2 max-w-2xl text-mute">{entry.description}</p>
+            </div>
           </li>
         ))}
       </ul>
