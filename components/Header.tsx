@@ -4,11 +4,11 @@ import { navLinkClass } from "@/lib/ui";
 
 export default function Header() {
   return (
-    <header className="border-b-2 border-night">
+    <header className="border-b border-line">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-7 sm:px-8">
         <Link
           href="/"
-          className="rounded-sm font-display text-2xl font-semibold text-ink transition-colors hover:text-terracotta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/40"
+          className="rounded-sm font-display text-2xl font-black uppercase tracking-tight text-paper transition-colors hover:text-amber focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/40"
         >
           {site.shortName}
         </Link>

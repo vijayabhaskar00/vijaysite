@@ -5,16 +5,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: "#FBF3E7",
-        ink: "#2B211A",
-        terracotta: "#C1512D",
-        ochre: "#B3792C",
-        teal: "#1F5C56",
-        night: "#221A14",
+        ink: "#0B0B0C",
+        paper: "#F2F1ED",
+        amber: "#FFB020",
+        signal: "#5B8CFF",
+        mute: "#8B8B90",
+        line: "#232326",
       },
       fontFamily: {
-        display: ["var(--font-fraunces)", "serif"],
-        body: ["var(--font-public-sans)", "sans-serif"],
+        display: ["var(--font-display)", "sans-serif"],
+        body: ["var(--font-body)", "sans-serif"],
+        mono: ["var(--font-mono)", "monospace"],
       },
     },
   },

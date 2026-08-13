@@ -56,10 +56,10 @@ const forbiddenSocialFragments = [
 // `rgb(r g b / <alpha>)`/`rgba(r,g,b,a)`, not literal hex, so we check for
 // the decimal triple rather than grepping for the hex string itself.
 const paletteColors = {
-  terracotta: "#c1512d",
-  ochre: "#b3792c",
-  teal: "#1f5c56",
-  night: "#221a14",
+  ink: "#0b0b0c",
+  paper: "#f2f1ed",
+  amber: "#ffb020",
+  signal: "#5b8cff",
 };
 
 function hexToRgbTriple(hex) {

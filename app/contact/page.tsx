@@ -12,8 +12,8 @@ export const metadata: Metadata = buildMetadata({
 export default function ContactPage() {
   return (
     <section className="max-w-2xl py-14 sm:py-20">
-      <p className="font-mono text-xs uppercase tracking-widest text-terracotta">Contact</p>
-      <h1 className="mt-2 text-balance font-display text-4xl text-ink sm:text-5xl">
+      <p className="font-mono text-xs uppercase tracking-widest text-amber">Contact</p>
+      <h1 className="mt-2 text-balance font-display text-4xl uppercase text-paper sm:text-5xl">
         Get in touch.
       </h1>
       <p className="mt-8">
@@ -23,7 +23,7 @@ export default function ContactPage() {
       </p>
       <ul
         aria-label="Social links"
-        className="mt-10 flex list-none flex-wrap gap-x-8 gap-y-3 border-t border-ink/10 p-0 pt-8 font-mono text-xs uppercase tracking-widest"
+        className="mt-10 flex list-none flex-wrap gap-x-8 gap-y-3 border-t border-line p-0 pt-8 font-mono text-xs uppercase tracking-widest"
       >
         {social.map((item) => (
           <li key={item.href}>

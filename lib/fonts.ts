@@ -1,14 +1,21 @@
-import { Fraunces, Public_Sans } from "next/font/google";
+import { Big_Shoulders_Display, Manrope, IBM_Plex_Mono } from "next/font/google";
 
-export const fraunces = Fraunces({
+export const bigShoulders = Big_Shoulders_Display({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-display",
   display: "swap",
-  style: ["normal", "italic"],
+  weight: ["700", "900"],
 });
 
-export const publicSans = Public_Sans({
+export const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-public-sans",
+  variable: "--font-body",
   display: "swap",
+});
+
+export const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+  weight: ["400", "500"],
 });

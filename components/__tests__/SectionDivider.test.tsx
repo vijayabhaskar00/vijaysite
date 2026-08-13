@@ -3,10 +3,10 @@ import { describe, expect, it } from "vitest";
 import SectionDivider from "../SectionDivider";
 
 describe("SectionDivider", () => {
-  it("renders a decorative, hidden-from-a11y-tree svg", () => {
+  it("renders an hr separator with the hairline border color", () => {
     const { container } = render(<SectionDivider />);
-    const svg = container.querySelector("svg");
-    expect(svg).toBeTruthy();
-    expect(svg).toHaveAttribute("aria-hidden", "true");
+    const hr = container.querySelector("hr");
+    expect(hr).toBeTruthy();
+    expect(hr).toHaveClass("border-line");
   });
 });

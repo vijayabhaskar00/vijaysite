@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { fraunces, publicSans } from "@/lib/fonts";
+import { bigShoulders, manrope, plexMono } from "@/lib/fonts";
 import { buildMetadata, personJsonLd } from "@/lib/seo";
 import { site } from "@/content/site";
 import Header from "@/components/Header";
@@ -14,8 +14,11 @@ export const metadata: Metadata = buildMetadata({
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${publicSans.variable}`}>
-      <body className="flex min-h-screen flex-col bg-bg font-body text-ink">
+    <html
+      lang="en"
+      className={`${bigShoulders.variable} ${manrope.variable} ${plexMono.variable}`}
+    >
+      <body className="flex min-h-screen flex-col bg-ink font-body text-paper">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd()) }}
