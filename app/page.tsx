@@ -1,16 +1,13 @@
-import Link from "next/link";
-import { site, nav, orgNames } from "@/content/site";
+import { site, orgNames } from "@/content/site";
 import PhotoFrame from "@/components/PhotoFrame";
 import SectionDivider from "@/components/SectionDivider";
 import StatBand from "@/components/StatBand";
 import Marquee from "@/components/Marquee";
 import Reveal from "@/components/Reveal";
-import { linkClass } from "@/lib/ui";
+import Flythrough from "@/components/motion/Flythrough";
 
 export default function HomePage() {
-  const exploreLinks = nav.filter((item) => item.href !== "/");
-
-  return (
+  const hero = (
     <>
       <section className="pb-10 pt-16 sm:pt-24 md:pb-16 md:pt-32">
         <p className="reveal font-mono text-xs uppercase tracking-[0.2em] text-amber">
@@ -42,20 +39,8 @@ export default function HomePage() {
       </Reveal>
 
       <SectionDivider />
-
-      <Reveal className="py-12 md:py-16">
-        <nav aria-label="Explore">
-          <ul className="flex list-none flex-wrap gap-x-10 gap-y-4 p-0 font-display text-2xl font-bold uppercase">
-            {exploreLinks.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className={linkClass}>
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </Reveal>
     </>
   );
+
+  return <Flythrough hero={hero} />;
 }

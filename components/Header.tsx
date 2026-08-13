@@ -4,7 +4,7 @@ import { navLinkClass } from "@/lib/ui";
 
 export default function Header() {
   return (
-    <header className="border-b border-line">
+    <header className="relative z-20 border-b border-line">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-7 sm:px-8">
         <Link
           href="/"
