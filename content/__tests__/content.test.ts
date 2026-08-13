@@ -57,14 +57,14 @@ describe("content integrity", () => {
     // legacy/decommissioned platforms and other organizations from the old
     // Blogger template that must never reappear.
     //
-    // NOTE: "Manipal University" already appears in the stuMagz employment
-    // description (content/experience.ts) and is not part of the four
-    // verified organizations above. Per this fix wave's scope, content
-    // *facts* are out of bounds (a separate, pending decision with the site
-    // owner covers whether to formally verify/allowlist it or remove it), so
-    // it is intentionally excluded from this check rather than silently
-    // allowlisted or deleted.
-    const knownPendingMentions = ["Manipal University"];
+    // "Manipal University" is a confirmed-accurate credential mention (site
+    // owner confirmed Vijaya Bhaskar Jatoth serves as Chief Academic Advisor
+    // there) — it just isn't one of the four formal employer/credential
+    // entries tracked by `allowedOrgs` above, which lists board/employment
+    // and credential-issuing organizations, not every institution mentioned
+    // in passing. It's excluded from the unapproved-organization scan below
+    // by design, permanently, not as a pending exclusion.
+    const approvedNonEmployerMentions = ["Manipal University"];
     const unapprovedOrgNames = [
       "Twitter",
       "LinkedIn",
@@ -78,8 +78,8 @@ describe("content integrity", () => {
     ];
     for (const entry of [...employment, ...credentials]) {
       let description = entry.description;
-      for (const pending of knownPendingMentions) {
-        description = description.split(pending).join("");
+      for (const approved of approvedNonEmployerMentions) {
+        description = description.split(approved).join("");
       }
       for (const bad of unapprovedOrgNames) {
         expect(description).not.toContain(bad);
