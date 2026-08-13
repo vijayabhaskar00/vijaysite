@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import { site } from "@/content/site";
 import PhotoFrame from "@/components/PhotoFrame";
+import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = buildMetadata({
   title: "About",
@@ -12,15 +13,17 @@ export const metadata: Metadata = buildMetadata({
 export default function AboutPage() {
   return (
     <section className="grid gap-10 py-14 sm:py-20 md:grid-cols-[minmax(0,200px)_1fr] md:items-start md:gap-16">
-      <PhotoFrame
-        src={site.photo.src}
-        alt={site.photo.alt}
-        width={site.photo.width}
-        height={site.photo.height}
-        loading="eager"
-        className="mx-auto h-40 w-40 md:mx-0 md:h-48 md:w-48"
-      />
-      <div>
+      <Reveal>
+        <PhotoFrame
+          src={site.photo.src}
+          alt={site.photo.alt}
+          width={site.photo.width}
+          height={site.photo.height}
+          loading="eager"
+          className="mx-auto h-40 w-40 md:mx-0 md:h-48 md:w-48"
+        />
+      </Reveal>
+      <Reveal delayMs={120}>
         <p className="font-mono text-xs uppercase tracking-widest text-amber">About</p>
         <h1 className="mt-2 text-balance font-display text-4xl font-bold uppercase leading-tight text-paper sm:text-5xl">
           Entrepreneur, mentor, and product designer.
@@ -30,7 +33,7 @@ export default function AboutPage() {
           &ldquo;{site.tagline}&rdquo; &mdash; based in {site.location}, working across education,
           innovation mentorship, and product design.
         </p>
-      </div>
+      </Reveal>
     </section>
   );
 }

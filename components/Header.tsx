@@ -8,7 +8,7 @@ export default function Header() {
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-7 sm:px-8">
         <Link
           href="/"
-          className="rounded-sm font-display text-2xl font-black uppercase tracking-tight text-paper transition-colors hover:text-amber focus-visible:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/40"
+          className="link-sweep inline-block rounded-sm font-display text-2xl font-black uppercase tracking-tight text-paper transition-[color,transform] duration-300 hover:text-amber motion-safe:hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/40"
         >
           {site.shortName}
         </Link>

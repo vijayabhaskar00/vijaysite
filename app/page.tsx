@@ -4,6 +4,7 @@ import PhotoFrame from "@/components/PhotoFrame";
 import SectionDivider from "@/components/SectionDivider";
 import StatBand from "@/components/StatBand";
 import Marquee from "@/components/Marquee";
+import Reveal from "@/components/Reveal";
 import { linkClass } from "@/lib/ui";
 
 export default function HomePage() {
@@ -36,21 +37,25 @@ export default function HomePage() {
         className="reveal [animation-delay:320ms] border-y border-line py-4 font-mono text-sm uppercase tracking-widest text-mute"
       />
 
-      <StatBand />
+      <Reveal>
+        <StatBand />
+      </Reveal>
 
       <SectionDivider />
 
-      <nav aria-label="Explore" className="py-12 md:py-16">
-        <ul className="flex list-none flex-wrap gap-x-10 gap-y-4 p-0 font-display text-2xl font-bold uppercase">
-          {exploreLinks.map((item) => (
-            <li key={item.href}>
-              <Link href={item.href} className={linkClass}>
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <Reveal className="py-12 md:py-16">
+        <nav aria-label="Explore">
+          <ul className="flex list-none flex-wrap gap-x-10 gap-y-4 p-0 font-display text-2xl font-bold uppercase">
+            {exploreLinks.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className={linkClass}>
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </Reveal>
     </>
   );
 }

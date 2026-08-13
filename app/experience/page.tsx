@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import { employment, credentials, education, type TimelineEntry } from "@/content/experience";
 import SectionDivider from "@/components/SectionDivider";
+import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = buildMetadata({
   title: "Experience",
@@ -47,7 +48,9 @@ export default function ExperiencePage() {
       {sections.map((section, index) => (
         <div key={section.title} className={index === 0 ? "mt-12" : undefined}>
           {index > 0 && <SectionDivider className="my-14" />}
-          <Timeline title={section.title} entries={section.entries} />
+          <Reveal delayMs={index * 80}>
+            <Timeline title={section.title} entries={section.entries} />
+          </Reveal>
         </div>
       ))}
     </section>
