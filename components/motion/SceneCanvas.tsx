@@ -31,7 +31,7 @@ function ParticleField({ count }: { count: number }) {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <pointsMaterial color="#5B8CFF" size={0.05} sizeAttenuation transparent opacity={0.8} />
+      <pointsMaterial color="#8B8B90" size={0.035} sizeAttenuation transparent opacity={0.55} />
     </points>
   );
 }
