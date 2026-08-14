@@ -1008,7 +1008,13 @@ git commit -m "Tune the particle field toward dim neutral stars"
 
 ## Final verification
 
-- [ ] Run: `npm test` — full suite passes.
-- [ ] Run: `npm run typecheck` — no errors.
-- [ ] Run: `npm run build && npm run verify:export` — static export still passes unmodified (the hard guarantee both prior motion specs established).
-- [ ] Manual pass in `npm run dev` at desktop and a narrow/mobile viewport width, plus one pass with the OS/browser "reduce motion" setting turned on, confirming: intro name zooms in, stats count up on scroll, logos orbit (grid under reduced motion), Experience waypoint shows three numbered highlights, Contact pins and crossfades (static stack under reduced motion), starfield reads neutral/dim.
+- [x] Run: `npm test` — full suite passes.
+- [x] Run: `npm run typecheck` — no errors.
+- [x] Run: `npm run build && npm run verify:export` — static export still passes unmodified (the hard guarantee both prior motion specs established).
+- [x] Manual pass in `npm run dev` at desktop and a narrow/mobile viewport width, plus one pass with the OS/browser "reduce motion" setting turned on, confirming: intro name zooms in, stats count up on scroll, logos orbit (grid under reduced motion), Experience waypoint shows three numbered highlights, Contact pins and crossfades (static stack under reduced motion), starfield reads neutral/dim.
+
+  Found and fixed during this pass: at narrow (390px) viewports, orbit
+  items at the extreme of their elliptical path and the timeline teaser's
+  OrgMark (missing its sizing-context wrapper) both caused genuine
+  page-level horizontal scroll. Fixed in a follow-up commit; re-verified
+  clean with no horizontal overflow at 390px.
