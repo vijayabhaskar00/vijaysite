@@ -40,9 +40,9 @@ describe("IntroOverlay", () => {
     render(<IntroOverlay enabled />);
     const name = screen.getByText("Vijaya Bhaskar");
     // Framer Motion writes `initial`/`animate` values to the element's
-    // inline `transform` style on mount; asserting a transform was written
-    // at all (rather than empty) confirms the added `scale` motion prop is
-    // wired up, without depending on Framer Motion's internal CSS format.
-    await waitFor(() => expect(name.style.transform).not.toBe(""));
+    // inline `transform` style on mount. The scale motion prop should be
+    // present in the transform string; asserting it contains "scale(" locks
+    // in the zoom behavior specifically.
+    await waitFor(() => expect(name.style.transform).toMatch(/scale\(/));
   });
 });
