@@ -126,8 +126,12 @@ export default function Flythrough({ hero }: FlythroughProps) {
                 <span className="mt-1 shrink-0 font-mono text-sm tabular-nums text-amber">
                   {entry.number}
                 </span>
-                <OrgMark org={entry.org} className="h-10 w-10 shrink-0" />
-                <div>
+                <div className="h-10 w-10 shrink-0">
+                  <div className="org-mark-wrap">
+                    <OrgMark org={entry.org} />
+                  </div>
+                </div>
+                <div className="min-w-0">
                   <p className="font-display text-lg font-bold uppercase text-paper">
                     {entry.role} · {entry.org}
                   </p>

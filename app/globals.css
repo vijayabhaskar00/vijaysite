@@ -366,6 +366,11 @@ body {
     height: 320px;
     max-width: 640px;
     margin: 0 auto;
+    /* Belt-and-braces on top of the geometry above: clip so an item at the
+       extreme of its elliptical path can never push the page into
+       horizontal scroll, matching the containment Marquee's wrapper already
+       relies on for its own oversized track. */
+    overflow: hidden;
   }
 
   .org-orbit-item {
