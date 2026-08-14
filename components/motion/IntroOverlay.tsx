@@ -101,8 +101,8 @@ export default function IntroOverlay({ enabled }: IntroOverlayProps) {
         >
           <motion.p
             className="font-display text-4xl font-black uppercase tracking-tight text-paper sm:text-6xl"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 20, scale: 1.6 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             {site.shortName}

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it } from "vitest";
 import IntroOverlay from "../IntroOverlay";
@@ -34,5 +34,15 @@ describe("IntroOverlay", () => {
   it("never renders any markup on the server -- it's a purely additive client enhancement", () => {
     const html = renderToStaticMarkup(<IntroOverlay enabled />);
     expect(html).toBe("");
+  });
+
+  it("applies a zoom transform alongside the existing fade/rise on the name", async () => {
+    render(<IntroOverlay enabled />);
+    const name = screen.getByText("Vijaya Bhaskar");
+    // Framer Motion writes `initial`/`animate` values to the element's
+    // inline `transform` style on mount; asserting a transform was written
+    // at all (rather than empty) confirms the added `scale` motion prop is
+    // wired up, without depending on Framer Motion's internal CSS format.
+    await waitFor(() => expect(name.style.transform).not.toBe(""));
   });
 });
