@@ -7,6 +7,7 @@ import Link from "next/link";
 import { detectWebGL2, prefersReducedMotion, resolveDeviceTier, type DeviceTier } from "./deviceTier";
 import IntroOverlay from "./IntroOverlay";
 import Waypoint from "./Waypoint";
+import PinnedStatement from "./PinnedStatement";
 import type { CameraKeyframe } from "./FlyPath";
 import { site, social } from "@/content/site";
 import { employment, credentials, education, type TimelineEntry } from "@/content/experience";
@@ -129,7 +130,13 @@ export default function Flythrough({ hero }: FlythroughProps) {
           </Link>
         </Waypoint>
 
-        <Waypoint range={[0.85, 1]} progress={scrollYProgress} reduceMotion={reduceMotion} className="min-h-screen py-24">
+        <PinnedStatement
+          range={[0.85, 1]}
+          progress={scrollYProgress}
+          reduceMotion={reduceMotion}
+          lines={[site.tagline, site.jobTitle, `${employment[0].role} · ${employment[0].org}`]}
+          className="min-h-[220vh] py-24"
+        >
           <p className="font-mono text-xs uppercase tracking-widest text-amber">Contact</p>
           <h2 className="mt-4 font-display text-4xl font-bold uppercase text-paper sm:text-5xl">
             Get in touch.
@@ -141,7 +148,7 @@ export default function Flythrough({ hero }: FlythroughProps) {
           </p>
           <ul
             aria-label="Social links"
-            className="mt-6 flex list-none flex-wrap gap-x-6 gap-y-2 p-0 font-mono text-xs uppercase tracking-widest"
+            className="mt-6 flex list-none flex-wrap justify-center gap-x-6 gap-y-2 p-0 font-mono text-xs uppercase tracking-widest"
           >
             {social.map((item) => (
               <li key={item.href}>
@@ -154,7 +161,7 @@ export default function Flythrough({ hero }: FlythroughProps) {
           <Link href="/contact" className={`mt-6 inline-block ${linkClass}`}>
             View full contact →
           </Link>
-        </Waypoint>
+        </PinnedStatement>
       </div>
     </div>
   );
