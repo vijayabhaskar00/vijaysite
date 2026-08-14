@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { motionValue } from "framer-motion";
 import { describe, expect, it } from "vitest";
@@ -42,6 +42,56 @@ describe("PinnedStatement", () => {
     expect(html).toContain("Line one");
     expect(html).toContain("Final CTA");
     expect(html).not.toMatch(/opacity:\s*0/);
+  });
+
+  // Regression test for a real accessibility bug: FadeSlots are absolutely
+  // stacked on top of each other, so a hidden slot's interactive content
+  // (e.g. the final slot's mailto/social/Link content) still sits
+  // geometrically on top of whichever slot is actually visible. Without
+  // this, a keyboard user tabbing through the page can land focus on
+  // invisible (opacity: 0) links -- the browser's default scrollIntoView
+  // only cares about geometric bounding rects, and once the sticky wrapper
+  // is on-screen at all, every slot's content is already geometrically "in
+  // view," so there's no further scroll to reveal what's actually focused.
+  //
+  // Note: jsdom does not implement the `inert` attribute's actual runtime
+  // behavior (it doesn't remove elements from tab order or the
+  // accessibility tree the way real evergreen browsers do), so this test
+  // can only verify the *mechanism* -- that the attribute and pointer-events
+  // style are correctly toggled as opacity crosses the threshold -- not the
+  // resulting browser behavior itself. A manual check in a real browser
+  // (Tab through the Contact section mid-crossfade and confirm focus never
+  // lands on an invisible link) is the fuller verification for that.
+  describe("inactive slot pointer/keyboard safety", () => {
+    it("marks a not-yet-visible slot inert and non-clickable, and restores the active slot once it becomes visible", async () => {
+      const progress = motionValue(0.25); // inside "Line one"'s fade-in/hold window
+      render(
+        <PinnedStatement progress={progress} range={[0, 1]} lines={["Line one"]}>
+          <a href="/contact">Final CTA</a>
+        </PinnedStatement>
+      );
+
+      const lineSlot = screen.getByText("Line one").parentElement as HTMLElement;
+      const ctaSlot = screen.getByText("Final CTA").parentElement as HTMLElement;
+
+      // "Line one" is visible; the final CTA slot hasn't been reached yet
+      // and must be excluded from pointer/keyboard interaction.
+      await waitFor(() => expect(lineSlot).not.toHaveAttribute("inert"));
+      expect(lineSlot.style.pointerEvents).toBe("auto");
+      await waitFor(() => expect(ctaSlot).toHaveAttribute("inert"));
+      expect(ctaSlot.style.pointerEvents).toBe("none");
+
+      act(() => {
+        progress.set(1); // scroll fully into the final content
+      });
+
+      // Once the final slot is fully visible it must be interactive again,
+      // and the now-hidden line slot must have become inert in turn.
+      await waitFor(() => expect(ctaSlot).not.toHaveAttribute("inert"));
+      expect(ctaSlot.style.pointerEvents).toBe("auto");
+      await waitFor(() => expect(lineSlot).toHaveAttribute("inert"));
+      expect(lineSlot.style.pointerEvents).toBe("none");
+    });
   });
 
   describe("reduceMotion", () => {

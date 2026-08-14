@@ -37,21 +37,54 @@ interface FadeSlotProps {
   children: ReactNode;
 }
 
+// Below this opacity a slot is visually gone -- but without more, its
+// interactive descendants (the final slot holds the mailto/social/Link
+// content) would still sit geometrically on top of whichever slot IS
+// visible, absolutely positioned via `inset-0`. `opacity: 0` alone doesn't
+// stop mouse clicks or keyboard focus: a keyboard user tabbing through the
+// page triggers the browser's default scrollIntoView, which only cares
+// about geometric bounding rects, not CSS opacity -- once the sticky
+// wrapper is on-screen at all (it's h-screen, so it fills the viewport by
+// design), every slot's content is already geometrically "in view," so
+// focus can land on invisible links with no further scroll to reveal them.
+const HIDDEN_OPACITY_THRESHOLD = 0.05;
+
 /** One crossfading layer, stacked absolutely over its siblings. Opacity is
  * driven imperatively via useMotionValueEvent rather than Framer Motion's
  * declarative `style` binding -- Waypoint.tsx hit a real-browser bug where
  * the declarative binding stopped writing updated opacity to the DOM after
  * mount (see that file's comments); this reuses the proven fix instead of
- * reintroducing the same class of bug. */
+ * reintroducing the same class of bug. The same callback also toggles
+ * `pointer-events` and the `inert` attribute at the same opacity threshold:
+ * `inert` is the purpose-built primitive for "present in the DOM (so
+ * no-JS/crawler/SSR visitors still see the content), but not interactive,
+ * not focusable, not exposed to assistive tech" -- it removes a near-
+ * invisible slot from tab order and screen-reader traversal without
+ * touching DOM structure. `pointer-events: none` is set alongside it as a
+ * belt-and-suspenders measure for mouse clicks specifically (pointer-events
+ * has no bearing on keyboard tab order on its own -- inert is what actually
+ * fixes that). Both are applied imperatively, same as opacity, so
+ * server-rendered/pre-mount markup never carries them either. */
 function FadeSlot({ progress, points, children }: FadeSlotProps) {
   const opacity = useTransform(progress, points, [0, 1, 1, 0]);
   const nodeRef = useRef<HTMLDivElement>(null);
 
-  useMotionValueEvent(opacity, "change", (latest) => {
-    if (nodeRef.current) nodeRef.current.style.opacity = String(latest);
-  });
+  const applyVisibility = (latest: number) => {
+    const node = nodeRef.current;
+    if (!node) return;
+    node.style.opacity = String(latest);
+    const hidden = latest < HIDDEN_OPACITY_THRESHOLD;
+    node.style.pointerEvents = hidden ? "none" : "auto";
+    if (hidden) {
+      node.setAttribute("inert", "");
+    } else {
+      node.removeAttribute("inert");
+    }
+  };
+
+  useMotionValueEvent(opacity, "change", applyVisibility);
   useIsomorphicLayoutEffect(() => {
-    if (nodeRef.current) nodeRef.current.style.opacity = String(opacity.get());
+    applyVisibility(opacity.get());
   }, [opacity]);
 
   return (
