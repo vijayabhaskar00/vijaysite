@@ -14,6 +14,23 @@ body {
   color: #f2f1ed;
 }
 
+/* Registered so `--num` is animatable (not just a plain custom property
+   swap) -- lives outside any media query since @property registration
+   itself is not motion, only the transition on it is. */
+@property --num {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+
+.stat-counter {
+  counter-reset: num var(--num, 0);
+}
+
+.stat-counter::before {
+  content: counter(num);
+}
+
 /* Grayscale-to-color reveal on hover — a small, deliberate interaction
    detail rather than a decorative frame; the portrait is a supporting
    element in this layout, not the hero. Hover-only: this is a pure color
@@ -251,6 +268,10 @@ body {
 
   .org-card:hover .org-mark img {
     filter: grayscale(0) brightness(1);
+  }
+
+  .stat-counter {
+    transition: --num 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @keyframes grain-shift {

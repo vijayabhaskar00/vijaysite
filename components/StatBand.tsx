@@ -1,4 +1,5 @@
 import { stats } from "@/content/site";
+import StatCounter from "@/components/StatCounter";
 
 export default function StatBand() {
   return (
@@ -7,7 +8,7 @@ export default function StatBand() {
         {stats.map((stat) => (
           <div key={stat.label}>
             <p className="font-display text-3xl font-bold tabular-nums text-amber sm:text-4xl">
-              {stat.value}
+              <StatCounter value={stat.value} />
             </p>
             <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-mute">
               {stat.label}
