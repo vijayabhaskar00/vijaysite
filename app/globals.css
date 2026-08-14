@@ -328,7 +328,7 @@ body {
     width: 92px;
     height: 92px;
     margin: auto;
-    offset-path: ellipse(280px 110px at 46px 46px);
+    offset-path: ellipse(clamp(120px, 38vw, 280px) 100px at 46px 46px);
     offset-rotate: 0deg;
     animation: orbit 24s linear infinite;
     animation-delay: calc(var(--i, 0) * (24s / var(--count, 1)) * -1);
