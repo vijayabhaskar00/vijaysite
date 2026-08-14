@@ -9,7 +9,8 @@ import IntroOverlay from "./IntroOverlay";
 import Waypoint from "./Waypoint";
 import type { CameraKeyframe } from "./FlyPath";
 import { site, social } from "@/content/site";
-import { employment } from "@/content/experience";
+import { employment, credentials, education, type TimelineEntry } from "@/content/experience";
+import OrgMark from "@/components/OrgMark";
 import { linkClass, navLinkClass } from "@/lib/ui";
 
 // Loaded only when tier is "full"/"reduced" (see the conditional render
@@ -26,6 +27,12 @@ const KEYFRAMES: CameraKeyframe[] = [
 interface FlythroughProps {
   hero: ReactNode;
 }
+
+const EXPERIENCE_HIGHLIGHTS: (TimelineEntry & { number: string })[] = [
+  { ...employment[0], number: "01" },
+  { ...credentials[0], number: "02" },
+  { ...education[0], number: "03" },
+];
 
 export default function Flythrough({ hero }: FlythroughProps) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -99,11 +106,24 @@ export default function Flythrough({ hero }: FlythroughProps) {
         <Waypoint range={[0.55, 0.75]} progress={scrollYProgress} reduceMotion={reduceMotion} className="min-h-screen py-24">
           <p className="font-mono text-xs uppercase tracking-widest text-amber">Experience</p>
           <h2 className="mt-4 font-display text-4xl font-bold uppercase text-paper sm:text-5xl">
-            {employment[0].role} · {employment[0].org}
+            A working history.
           </h2>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-mute">
-            {employment[0].description}
-          </p>
+          <ol className="mt-8 max-w-xl space-y-6">
+            {EXPERIENCE_HIGHLIGHTS.map((entry) => (
+              <li key={`${entry.org}-${entry.period}`} className="flex items-start gap-4">
+                <span className="mt-1 shrink-0 font-mono text-sm tabular-nums text-amber">
+                  {entry.number}
+                </span>
+                <OrgMark org={entry.org} className="h-10 w-10 shrink-0" />
+                <div>
+                  <p className="font-display text-lg font-bold uppercase text-paper">
+                    {entry.role} · {entry.org}
+                  </p>
+                  <p className="mt-1 text-sm text-mute">{entry.period}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
           <Link href="/experience" className={`mt-6 inline-block ${linkClass}`}>
             View full timeline →
           </Link>

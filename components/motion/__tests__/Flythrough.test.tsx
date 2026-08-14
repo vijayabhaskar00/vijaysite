@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import Flythrough from "../Flythrough";
+import { employment, credentials, education } from "@/content/experience";
 
 // Real @react-three/fiber Canvas needs a real WebGL context and
 // ResizeObserver, neither of which jsdom provides (no polyfill configured in
@@ -157,5 +158,18 @@ describe("Flythrough", () => {
         document.querySelectorAll('[style*="opacity"], [style*="transform"]').length
       ).toBeGreaterThan(0);
     });
+  });
+
+  it("renders one experience highlight from each of employment, credentials, and education", () => {
+    render(<Flythrough hero={<h1>Hero content</h1>} />);
+    expect(
+      screen.getByText(`${employment[0].role} · ${employment[0].org}`)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(`${credentials[0].role} · ${credentials[0].org}`)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(`${education[0].role} · ${education[0].org}`)
+    ).toBeInTheDocument();
   });
 });
