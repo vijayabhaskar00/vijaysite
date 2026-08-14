@@ -34,19 +34,33 @@ export function buildFadeSegments(
 interface FadeSlotProps {
   progress: MotionValue<number>;
   points: [number, number, number, number];
+  /** When true, only opacity is ever written -- never `inert`, never
+   * `pointer-events`. Set for the final slot, which holds the section's real
+   * interactive content (the mailto link, the social links, the "View full
+   * contact" link). Those are this page's only route to contacting the site
+   * owner from the homepage, so they must stay in the accessibility tree and
+   * in tab order at every scroll position; gating them on opacity would make
+   * them unreachable by keyboard/AT until scroll progress was almost at the
+   * very end. The decorative line slots keep the gating -- they're
+   * non-interactive text that also appears, fully accessible, in the
+   * Experience section above. */
+  alwaysInteractive?: boolean;
   children: ReactNode;
 }
 
 // Below this opacity a slot is visually gone -- but without more, its
-// interactive descendants (the final slot holds the mailto/social/Link
-// content) would still sit geometrically on top of whichever slot IS
+// descendants would still sit geometrically on top of whichever slot IS
 // visible, absolutely positioned via `inset-0`. `opacity: 0` alone doesn't
 // stop mouse clicks or keyboard focus: a keyboard user tabbing through the
 // page triggers the browser's default scrollIntoView, which only cares
 // about geometric bounding rects, not CSS opacity -- once the sticky
 // wrapper is on-screen at all (it's h-screen, so it fills the viewport by
 // design), every slot's content is already geometrically "in view," so
-// focus can land on invisible links with no further scroll to reveal them.
+// focus can land on invisible content with no further scroll to reveal it,
+// and a screen reader reads out every stacked line at once. That's why the
+// decorative line slots are gated. The one slot that holds real interactive
+// content is deliberately NOT gated (see `alwaysInteractive`): being
+// unreachable is a worse outcome for it than being reachable while faint.
 const HIDDEN_OPACITY_THRESHOLD = 0.05;
 
 /** One crossfading layer, stacked absolutely over its siblings. Opacity is
@@ -64,8 +78,10 @@ const HIDDEN_OPACITY_THRESHOLD = 0.05;
  * belt-and-suspenders measure for mouse clicks specifically (pointer-events
  * has no bearing on keyboard tab order on its own -- inert is what actually
  * fixes that). Both are applied imperatively, same as opacity, so
- * server-rendered/pre-mount markup never carries them either. */
-function FadeSlot({ progress, points, children }: FadeSlotProps) {
+ * server-rendered/pre-mount markup never carries them either. Slots marked
+ * `alwaysInteractive` opt out of that gating entirely -- see the prop's own
+ * comment above. */
+function FadeSlot({ progress, points, alwaysInteractive = false, children }: FadeSlotProps) {
   const opacity = useTransform(progress, points, [0, 1, 1, 0]);
   const nodeRef = useRef<HTMLDivElement>(null);
 
@@ -73,6 +89,7 @@ function FadeSlot({ progress, points, children }: FadeSlotProps) {
     const node = nodeRef.current;
     if (!node) return;
     node.style.opacity = String(latest);
+    if (alwaysInteractive) return;
     const hidden = latest < HIDDEN_OPACITY_THRESHOLD;
     node.style.pointerEvents = hidden ? "none" : "auto";
     if (hidden) {
@@ -110,7 +127,16 @@ interface PinnedStatementProps {
    * document flow -- no `position: sticky`, no crossfade -- same contract
    * Waypoint's `reduceMotion` prop already guarantees. */
   reduceMotion?: boolean;
+  /** Classes shared by BOTH branches -- padding, colour, and anything else
+   * that is genuinely about how this section looks. */
   className?: string;
+  /** Classes applied ONLY to the animated branch: the extra page height the
+   * sticky pin needs to have something to scroll through (e.g.
+   * `min-h-[220vh]`). Deliberately kept off the reduced-motion branch, which
+   * has no sticky element and no crossfade -- there, that height would just
+   * be ~1.5 viewports of empty page between the contact content and the
+   * footer. */
+  scrollHeightClassName?: string;
 }
 
 export default function PinnedStatement({
@@ -120,6 +146,7 @@ export default function PinnedStatement({
   progress,
   reduceMotion = false,
   className,
+  scrollHeightClassName,
 }: PinnedStatementProps) {
   if (reduceMotion) {
     return (
@@ -139,7 +166,7 @@ export default function PinnedStatement({
   const segments = buildFadeSegments(range, lines.length + 1);
 
   return (
-    <section className={className}>
+    <section className={[scrollHeightClassName, className].filter(Boolean).join(" ")}>
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
         <div className="relative h-full w-full max-w-3xl">
           {lines.map((line, index) => (
@@ -147,7 +174,7 @@ export default function PinnedStatement({
               <p className="max-w-xl text-lg leading-relaxed text-mute sm:text-xl">{line}</p>
             </FadeSlot>
           ))}
-          <FadeSlot progress={progress} points={segments[lines.length]}>
+          <FadeSlot progress={progress} points={segments[lines.length]} alwaysInteractive>
             {children}
           </FadeSlot>
         </div>

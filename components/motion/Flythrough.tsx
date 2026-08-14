@@ -93,7 +93,18 @@ export default function Flythrough({ hero }: FlythroughProps) {
       <div className="relative z-10">
         <div className="min-h-screen">{hero}</div>
 
-        <Waypoint range={[0.25, 0.45]} progress={scrollYProgress} reduceMotion={reduceMotion} className="min-h-screen py-24">
+        {/* Progress ranges below are fractions of the WHOLE track (useScroll's
+            target is this component's outer div, offset start-start/end-end),
+            so they have to be re-derived whenever any section's height
+            changes. Current track, in viewport units: hero ~1.5v (its content
+            overflows the min-h-screen box), About 1v, Experience 1v, Contact
+            2.2v (min-h-[220vh], the sticky pin's scroll room) = ~5.7v total,
+            of which 4.7v is actually scrollable. That puts About's content
+            centred at p ~0.27, Experience's at ~0.48, and the Contact pin's
+            sticky window at p 0.745-1 -- which is what each range below is
+            tuned to (a waypoint reaches full opacity at its range's midpoint;
+            PinnedStatement subdivides its range across its slots). */}
+        <Waypoint range={[0.18, 0.36]} progress={scrollYProgress} reduceMotion={reduceMotion} className="min-h-screen py-24">
           <p className="font-mono text-xs uppercase tracking-widest text-amber">About</p>
           <h2 className="mt-4 max-w-2xl text-balance font-display text-4xl font-bold uppercase text-paper sm:text-5xl">
             {site.tagline}
@@ -104,7 +115,7 @@ export default function Flythrough({ hero }: FlythroughProps) {
           </Link>
         </Waypoint>
 
-        <Waypoint range={[0.55, 0.75]} progress={scrollYProgress} reduceMotion={reduceMotion} className="min-h-screen py-24">
+        <Waypoint range={[0.40, 0.56]} progress={scrollYProgress} reduceMotion={reduceMotion} className="min-h-screen py-24">
           <p className="font-mono text-xs uppercase tracking-widest text-amber">Experience</p>
           <h2 className="mt-4 font-display text-4xl font-bold uppercase text-paper sm:text-5xl">
             A working history.
@@ -130,12 +141,18 @@ export default function Flythrough({ hero }: FlythroughProps) {
           </Link>
         </Waypoint>
 
+        {/* Two lines, not three: a third line built from employment[0]
+            ("Board Member · stuMagz") differed from site.jobTitle ("Board
+            Member, stuMagz") only by its separator, so the crossfade read as
+            a rendering stutter rather than a sequence -- and it duplicated a
+            string the Experience waypoint above already shows. */}
         <PinnedStatement
-          range={[0.85, 1]}
+          range={[0.72, 1]}
           progress={scrollYProgress}
           reduceMotion={reduceMotion}
-          lines={[site.tagline, site.jobTitle, `${employment[0].role} · ${employment[0].org}`]}
-          className="min-h-[220vh] py-24"
+          lines={[site.tagline, site.jobTitle]}
+          className="py-24"
+          scrollHeightClassName="min-h-[220vh]"
         >
           <p className="font-mono text-xs uppercase tracking-widest text-amber">Contact</p>
           <h2 className="mt-4 font-display text-4xl font-bold uppercase text-paper sm:text-5xl">

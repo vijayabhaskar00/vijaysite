@@ -17,6 +17,31 @@ describe("buildFadeSegments", () => {
     expect(last[2]).toBe(1); // fallStart pinned to range end -- never fades before it
     expect(last[3]).toBeGreaterThan(1); // fallEnd sits beyond range end -- never actually reached
   });
+
+  // The case above is the brief's toy example. This one pins the actual
+  // production parameters used by Flythrough's Contact section (two
+  // crossfade lines + the resting CTA = 3 slots across [0.72, 1]) so a
+  // future change to either the range or the line count has to consciously
+  // re-check that every slot still lands inside the sticky pin's window
+  // (progress ~0.745-1 -- see Flythrough.tsx's range comment).
+  it("subdivides the production Contact range across its three real slots", () => {
+    const segments = buildFadeSegments([0.72, 1], 3);
+    expect(segments).toHaveLength(3);
+
+    const width = (1 - 0.72) / 3; // ~0.0933 of total page progress per slot
+    expect(segments[0][0]).toBe(0.72); // first slot starts exactly at range start
+    expect(segments[0][1]).toBeCloseTo(0.72 + width * 0.25, 4); // fully visible by ~0.743
+    expect(segments[0][3]).toBeCloseTo(0.72 + width, 4);
+    expect(segments[1][0]).toBeCloseTo(0.72 + width, 4); // slot 2 picks up where slot 1 ends
+    expect(segments[2][0]).toBeCloseTo(0.72 + width * 2, 4); // ~0.907
+
+    // The final slot (the resting CTA) fades in over the first quarter of
+    // its own segment -- fully visible by ~0.93 -- and then holds, because
+    // its fade-out points sit at/beyond the range end.
+    expect(segments[2][1]).toBeCloseTo(0.93, 4);
+    expect(segments[2][2]).toBe(1);
+    expect(segments[2][3]).toBeGreaterThan(1);
+  });
 });
 
 describe("PinnedStatement", () => {
@@ -45,8 +70,7 @@ describe("PinnedStatement", () => {
   });
 
   // Regression test for a real accessibility bug: FadeSlots are absolutely
-  // stacked on top of each other, so a hidden slot's interactive content
-  // (e.g. the final slot's mailto/social/Link content) still sits
+  // stacked on top of each other, so a hidden slot's content still sits
   // geometrically on top of whichever slot is actually visible. Without
   // this, a keyboard user tabbing through the page can land focus on
   // invisible (opacity: 0) links -- the browser's default scrollIntoView
@@ -63,8 +87,8 @@ describe("PinnedStatement", () => {
   // (Tab through the Contact section mid-crossfade and confirm focus never
   // lands on an invisible link) is the fuller verification for that.
   describe("inactive slot pointer/keyboard safety", () => {
-    it("marks a not-yet-visible slot inert and non-clickable, and restores the active slot once it becomes visible", async () => {
-      const progress = motionValue(0.25); // inside "Line one"'s fade-in/hold window
+    it("marks a not-yet-visible decorative line slot inert and non-clickable, and restores it once it becomes visible", async () => {
+      const progress = motionValue(1); // past "Line one"'s window, on the final slot
       render(
         <PinnedStatement progress={progress} range={[0, 1]} lines={["Line one"]}>
           <a href="/contact">Final CTA</a>
@@ -72,25 +96,49 @@ describe("PinnedStatement", () => {
       );
 
       const lineSlot = screen.getByText("Line one").parentElement as HTMLElement;
-      const ctaSlot = screen.getByText("Final CTA").parentElement as HTMLElement;
 
-      // "Line one" is visible; the final CTA slot hasn't been reached yet
-      // and must be excluded from pointer/keyboard interaction.
-      await waitFor(() => expect(lineSlot).not.toHaveAttribute("inert"));
-      expect(lineSlot.style.pointerEvents).toBe("auto");
-      await waitFor(() => expect(ctaSlot).toHaveAttribute("inert"));
-      expect(ctaSlot.style.pointerEvents).toBe("none");
-
-      act(() => {
-        progress.set(1); // scroll fully into the final content
-      });
-
-      // Once the final slot is fully visible it must be interactive again,
-      // and the now-hidden line slot must have become inert in turn.
-      await waitFor(() => expect(ctaSlot).not.toHaveAttribute("inert"));
-      expect(ctaSlot.style.pointerEvents).toBe("auto");
       await waitFor(() => expect(lineSlot).toHaveAttribute("inert"));
       expect(lineSlot.style.pointerEvents).toBe("none");
+
+      act(() => {
+        progress.set(0.25); // back into "Line one"'s fade-in/hold window
+      });
+
+      await waitFor(() => expect(lineSlot).not.toHaveAttribute("inert"));
+      expect(lineSlot.style.pointerEvents).toBe("auto");
+    });
+
+    // The counterpart guarantee, and a regression test for a real
+    // accessibility bug the gating above originally caused: the FINAL slot
+    // holds this section's only contact links (mailto, socials, "View full
+    // contact"). Gating those on opacity left keyboard and screen-reader
+    // users with no way to reach them until scroll progress was nearly at
+    // the very end -- strictly worse than having no crossfade at all. It is
+    // exempt, so only opacity is ever written to it.
+    it("never makes the final content slot inert or unclickable, at any scroll progress", async () => {
+      const progress = motionValue(0); // nothing of the final slot is visible yet
+      render(
+        <PinnedStatement progress={progress} range={[0, 1]} lines={["Line one"]}>
+          <a href="/contact">Final CTA</a>
+        </PinnedStatement>
+      );
+
+      const ctaSlot = screen.getByText("Final CTA").parentElement as HTMLElement;
+
+      // Opacity is still driven (it fades in with scroll like any slot)...
+      await waitFor(() => expect(ctaSlot.style.opacity).toBe("0"));
+      // ...but interactivity is never taken away.
+      expect(ctaSlot).not.toHaveAttribute("inert");
+      expect(ctaSlot.style.pointerEvents).toBe("");
+
+      for (const value of [0.25, 0.5, 0.9, 1]) {
+        act(() => {
+          progress.set(value);
+        });
+        expect(ctaSlot).not.toHaveAttribute("inert");
+        expect(ctaSlot.style.pointerEvents).toBe("");
+      }
+      await waitFor(() => expect(ctaSlot.style.opacity).toBe("1")); // still fades in normally
     });
   });
 
@@ -108,6 +156,43 @@ describe("PinnedStatement", () => {
       expect(
         container.querySelectorAll('[style*="opacity"], [style*="transform"]')
       ).toHaveLength(0);
+    });
+
+    // With no sticky element and no crossfade, the extra page height the pin
+    // needs buys a reduced-motion visitor nothing -- it would just be ~1.5
+    // viewports of empty page between the contact content and the footer.
+    it("applies scrollHeightClassName only to the animated branch, never the static one", () => {
+      const progress = motionValue(0);
+      const { container: animated } = render(
+        <PinnedStatement
+          progress={progress}
+          range={[0.72, 1]}
+          lines={["Line one"]}
+          className="py-24"
+          scrollHeightClassName="min-h-[220vh]"
+        >
+          <p>Final CTA</p>
+        </PinnedStatement>
+      );
+      const animatedSection = animated.querySelector("section") as HTMLElement;
+      expect(animatedSection.className).toContain("min-h-[220vh]");
+      expect(animatedSection.className).toContain("py-24");
+
+      const { container: staticContainer } = render(
+        <PinnedStatement
+          progress={progress}
+          range={[0.72, 1]}
+          lines={["Line one"]}
+          className="py-24"
+          scrollHeightClassName="min-h-[220vh]"
+          reduceMotion
+        >
+          <p>Final CTA</p>
+        </PinnedStatement>
+      );
+      const staticSection = staticContainer.querySelector("section") as HTMLElement;
+      expect(staticSection.className).not.toContain("min-h-[220vh]");
+      expect(staticSection.className).toContain("py-24"); // shared concerns still apply
     });
   });
 });

@@ -162,13 +162,9 @@ describe("Flythrough", () => {
 
   it("renders one experience highlight from each of employment, credentials, and education", () => {
     render(<Flythrough hero={<h1>Hero content</h1>} />);
-    // employment[0]'s "role · org" string is reused verbatim as the third
-    // pinned-crossfade line in the Contact PinnedStatement, so it legitimately
-    // renders twice: once in the Experience waypoint's list, once in Contact's
-    // crossfade slot -- getAllByText (not getByText) accommodates that.
     expect(
-      screen.getAllByText(`${employment[0].role} · ${employment[0].org}`).length
-    ).toBeGreaterThanOrEqual(2);
+      screen.getByText(`${employment[0].role} · ${employment[0].org}`)
+    ).toBeInTheDocument();
     expect(
       screen.getByText(`${credentials[0].role} · ${credentials[0].org}`)
     ).toBeInTheDocument();
