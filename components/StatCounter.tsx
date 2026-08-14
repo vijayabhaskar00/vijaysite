@@ -27,10 +27,10 @@ export default function StatCounter({ value, className }: StatCounterProps) {
     if (!isNumeric) return;
     const node = ref.current;
     if (!node || typeof IntersectionObserver === "undefined") return;
-    setPending(true);
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
+          setPending(true);
           setTarget(Number(value));
           observer.disconnect();
         }
