@@ -313,6 +313,48 @@ body {
   .grain-overlay {
     animation: grain-shift 1.1s steps(8) infinite;
   }
+
+  .org-orbit {
+    position: relative;
+    display: block;
+    height: 260px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .org-orbit-item {
+    position: absolute;
+    inset: 0;
+    width: 92px;
+    height: 92px;
+    margin: auto;
+    offset-path: ellipse(46% 38% at 50% 50%);
+    animation: orbit 24s linear infinite;
+    animation-delay: calc(var(--i, 0) * (24s / var(--count, 1)) * -1);
+  }
+
+  .org-orbit-item:hover,
+  .org-orbit-item:focus-within {
+    animation-play-state: paused;
+  }
+
+  @keyframes orbit {
+    0% {
+      offset-distance: 0%;
+      opacity: 0.35;
+      transform: scale(0.8);
+    }
+    50% {
+      offset-distance: 50%;
+      opacity: 1;
+      transform: scale(1.08);
+    }
+    100% {
+      offset-distance: 100%;
+      opacity: 0.35;
+      transform: scale(0.8);
+    }
+  }
 }
 
 /* Slow-scrolling credentials ticker beneath the hero — the page's one

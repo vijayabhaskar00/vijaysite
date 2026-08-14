@@ -6,7 +6,6 @@ import { orgNames } from "@/content/site";
 import { orgLogos } from "@/content/orgLogos";
 import { resolveAssetPath } from "@/lib/assetPath";
 import OrgMark from "@/components/OrgMark";
-import Reveal from "@/components/Reveal";
 import { prefersReducedMotion, resolveDeviceTier, type DeviceTier } from "@/components/motion/deviceTier";
 
 // The WebGL distortion layer is only ever mounted for "full"-tier visitors
@@ -39,11 +38,14 @@ export default function OrgLogoGrid() {
   const shaderEnabled = tier === "full" && !reduceMotion;
 
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div
+      className="org-orbit grid grid-cols-2 gap-4 sm:grid-cols-4"
+      style={{ "--count": orgNames.length } as React.CSSProperties}
+    >
       {orgNames.map((org, index) => {
         const logoSrc = orgLogos[org];
         return (
-          <Reveal key={org} delayMs={index * 60}>
+          <div key={org} className="org-orbit-item" style={{ "--i": index } as React.CSSProperties}>
             <div className="org-card group">
               <div className="org-mark-wrap">
                 <OrgMark org={org} />
@@ -51,7 +53,7 @@ export default function OrgLogoGrid() {
               </div>
               <p className="mt-3 font-mono text-[11px] uppercase tracking-widest text-mute">{org}</p>
             </div>
-          </Reveal>
+          </div>
         );
       })}
     </div>

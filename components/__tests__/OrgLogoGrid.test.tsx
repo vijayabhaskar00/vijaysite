@@ -17,4 +17,13 @@ describe("OrgLogoGrid", () => {
     const { container } = render(<OrgLogoGrid />);
     expect(container.querySelector("canvas")).not.toBeInTheDocument();
   });
+
+  it("positions logos via CSS only -- no JS-computed inline transform", () => {
+    const { container } = render(<OrgLogoGrid />);
+    const items = container.querySelectorAll(".org-orbit-item");
+    expect(items.length).toBe(orgNames.length);
+    for (const item of Array.from(items)) {
+      expect((item as HTMLElement).style.transform).toBe("");
+    }
+  });
 });
