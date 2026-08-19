@@ -4,8 +4,9 @@
 const focusRingClass = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clay-amber/40";
 
 // link-sweep (globals.css) draws an animated underline on hover/focus for
-// inline body-text links (mailto, "View full profile"-style CTAs).
-export const linkClass = `link-sweep font-semibold text-clay-amber rounded-sm ${focusRingClass}`;
+// inline body-text links (mailto, "View full profile"-style CTAs). `group`
+// lets an arrow glyph nested inside react to group-hover (see app/page.tsx).
+export const linkClass = `link-sweep group font-semibold text-clay-amber rounded-sm ${focusRingClass}`;
 
 // Pill-shaped nav/social links: fills with the site's primary accent on
 // hover/focus and presses in on click, replacing the old underline-sweep +

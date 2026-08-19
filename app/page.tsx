@@ -1,11 +1,9 @@
 import Link from "next/link";
-import { site, social, orgNames } from "@/content/site";
+import { site, social } from "@/content/site";
 import { employment, credentials, education, type TimelineEntry } from "@/content/experience";
-import PhotoFrame from "@/components/PhotoFrame";
+import HomeHero from "@/components/HomeHero";
 import StatBand from "@/components/StatBand";
-import Marquee from "@/components/Marquee";
 import Reveal from "@/components/Reveal";
-import SplitText from "@/components/SplitText";
 import OrgLogoGrid from "@/components/OrgLogoGrid";
 import OrgMark from "@/components/OrgMark";
 import { linkClass, navLinkClass } from "@/lib/ui";
@@ -16,57 +14,21 @@ const EXPERIENCE_HIGHLIGHTS: (TimelineEntry & { number: string })[] = [
   { ...education[0], number: "03" },
 ];
 
-/** Two overlapping soft blobs behind the hero portrait — the clay
- * illustration that replaces the removed Three.js flythrough canvas. Pure
- * decoration (aria-hidden), so it carries no content of its own. */
-function ClayBlobBackdrop() {
+function ArrowLink({ href, children }: { href: string; children: string }) {
   return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 400 400"
-      className="pointer-events-none absolute -right-12 -top-12 -z-10 h-40 w-40 opacity-90 sm:-right-14 sm:-top-14 sm:h-48 sm:w-48 lg:-right-16 lg:-top-16 lg:h-56 lg:w-56"
-    >
-      <path
-        fill="#FBE0C4"
-        d="M281,305Q246,360,183,347Q120,334,88,281Q56,228,80,169Q104,110,163,86Q222,62,272,101Q322,140,323,199Q324,258,281,305Z"
-      />
-      <path
-        fill="#FBE1E9"
-        opacity="0.8"
-        d="M255,120Q270,180,235,220Q200,260,150,245Q100,230,90,175Q80,120,125,90Q170,60,215,80Q260,100,255,120Z"
-      />
-    </svg>
+    <Link href={href} className={`mt-6 inline-block ${linkClass}`}>
+      {children}{" "}
+      <span className="inline-block motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:translate-x-1">
+        →
+      </span>
+    </Link>
   );
 }
 
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-12 sm:gap-16">
-      <section className="relative overflow-hidden pt-16 sm:pt-24 md:pt-32">
-        <ClayBlobBackdrop />
-        <p className="reveal inline-block rounded-full bg-clay-amber-light px-4 py-1 text-xs font-semibold uppercase tracking-wide text-clay-amber">
-          {site.location} — {site.tagline}
-        </p>
-        <h1 className="mt-4 text-balance font-display text-[clamp(2.75rem,9vw,7rem)] font-extrabold leading-[0.95] text-ink">
-          <SplitText text={site.name} baseDelayMs={80} staggerMs={18} />
-        </h1>
-        <div className="reveal [animation-delay:200ms] mt-8 flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
-          <p className="max-w-xl text-lg leading-relaxed text-mute">{site.description}</p>
-          <PhotoFrame
-            src={site.photo.src}
-            alt={site.photo.alt}
-            width={site.photo.width}
-            height={site.photo.height}
-            loading="eager"
-            className="h-28 w-28 shrink-0 md:h-32 md:w-32"
-          />
-        </div>
-      </section>
-
-      <Marquee
-        items={orgNames}
-        className="reveal [animation-delay:320ms] rounded-full bg-surface py-4 text-sm font-semibold text-mute shadow-clay-raised"
-      />
+      <HomeHero />
 
       <Reveal>
         <StatBand />
@@ -89,9 +51,7 @@ export default function HomePage() {
           {site.tagline}
         </h2>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink/80">{site.description}</p>
-        <Link href="/about" className={`mt-6 inline-block ${linkClass}`}>
-          View full profile →
-        </Link>
+        <ArrowLink href="/about">View full profile</ArrowLink>
       </Reveal>
 
       <Reveal className="rounded-[2rem] bg-clay-teal-light px-6 py-14 sm:py-20">
@@ -113,9 +73,7 @@ export default function HomePage() {
             </li>
           ))}
         </ol>
-        <Link href="/experience" className={`mt-6 inline-block ${linkClass}`}>
-          View full timeline →
-        </Link>
+        <ArrowLink href="/experience">View full timeline</ArrowLink>
       </Reveal>
 
       <Reveal className="rounded-[2rem] bg-clay-lavender-light px-6 py-14 text-center sm:py-20">
@@ -137,9 +95,7 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
-        <Link href="/contact" className={`mt-6 inline-block ${linkClass}`}>
-          View full contact →
-        </Link>
+        <ArrowLink href="/contact">View full contact</ArrowLink>
       </Reveal>
     </div>
   );
