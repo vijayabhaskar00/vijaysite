@@ -24,7 +24,7 @@ function ClayBlobBackdrop() {
     <svg
       aria-hidden="true"
       viewBox="0 0 400 400"
-      className="pointer-events-none absolute -right-16 -top-16 -z-10 h-72 w-72 opacity-90 sm:h-96 sm:w-96"
+      className="pointer-events-none absolute -right-12 -top-12 -z-10 h-40 w-40 opacity-90 sm:-right-14 sm:-top-14 sm:h-48 sm:w-48 lg:-right-16 lg:-top-16 lg:h-56 lg:w-56"
     >
       <path
         fill="#FBE0C4"
@@ -41,8 +41,8 @@ function ClayBlobBackdrop() {
 
 export default function HomePage() {
   return (
-    <>
-      <section className="relative overflow-hidden pb-10 pt-16 sm:pt-24 md:pb-16 md:pt-32">
+    <div className="flex flex-col gap-12 sm:gap-16">
+      <section className="relative overflow-hidden pt-16 sm:pt-24 md:pt-32">
         <ClayBlobBackdrop />
         <p className="reveal inline-block rounded-full bg-clay-amber-light px-4 py-1 text-xs font-semibold uppercase tracking-wide text-clay-amber">
           {site.location} — {site.tagline}
@@ -68,11 +68,11 @@ export default function HomePage() {
         className="reveal [animation-delay:320ms] rounded-full bg-surface py-4 text-sm font-semibold text-mute shadow-clay-raised"
       />
 
-      <Reveal className="py-14 sm:py-20">
+      <Reveal>
         <StatBand />
       </Reveal>
 
-      <Reveal className="py-14 sm:py-20">
+      <Reveal>
         <p className="inline-block rounded-full bg-clay-amber-light px-4 py-1 text-xs font-semibold uppercase tracking-wide text-clay-amber">
           Affiliations &amp; credentials
         </p>
@@ -141,6 +141,6 @@ export default function HomePage() {
           View full contact →
         </Link>
       </Reveal>
-    </>
+    </div>
   );
 }
