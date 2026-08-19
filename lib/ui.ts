@@ -11,5 +11,14 @@ export const linkClass = `link-sweep group font-semibold text-clay-amber rounded
 // Pill-shaped nav/social links: fills with the site's primary accent and
 // scales up slightly on hover/focus, presses back down on click --
 // motion-safe: means this stays purely a color change under
-// prefers-reduced-motion, with zero JS involved either way.
-export const navLinkClass = `inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold text-ink shadow-clay-raised transition-[background-color,color,transform] duration-300 hover:bg-clay-amber hover:text-surface focus-visible:bg-clay-amber focus-visible:text-surface motion-safe:hover:scale-[1.03] motion-safe:focus-visible:scale-[1.03] motion-safe:active:scale-95 active:shadow-clay-pressed ${focusRingClass}`;
+// prefers-reduced-motion, with zero JS involved either way. A function
+// (not a plain string) so Header can request the permanently-filled
+// `active` variant for the current page's nav pill without duplicating
+// this whole class list -- every other caller keeps calling it with no
+// argument, identical to the old constant's output.
+export function navLinkClass(active = false): string {
+  const state = active
+    ? "text-surface"
+    : "text-ink hover:bg-clay-amber hover:text-surface focus-visible:bg-clay-amber focus-visible:text-surface";
+  return `inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold shadow-clay-raised transition-[background-color,color,transform] duration-300 motion-safe:hover:scale-[1.03] motion-safe:focus-visible:scale-[1.03] motion-safe:active:scale-95 active:shadow-clay-pressed ${state} ${focusRingClass}`;
+}

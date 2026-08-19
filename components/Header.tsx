@@ -16,7 +16,7 @@ export default function Header() {
           <ul className="flex list-none flex-wrap items-center gap-2 p-0">
             {nav.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className={navLinkClass}>
+                <Link href={item.href} className={navLinkClass()}>
                   {item.label}
                 </Link>
               </li>

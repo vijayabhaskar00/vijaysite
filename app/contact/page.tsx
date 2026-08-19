@@ -31,7 +31,7 @@ export default function ContactPage() {
         <ul aria-label="Social links" className="mt-10 flex list-none flex-wrap gap-2 p-0 pt-8">
           {social.map((item) => (
             <li key={item.href}>
-              <a href={item.href} target="_blank" rel="noreferrer noopener" className={navLinkClass}>
+              <a href={item.href} target="_blank" rel="noreferrer noopener" className={navLinkClass()}>
                 {item.label}
               </a>
             </li>

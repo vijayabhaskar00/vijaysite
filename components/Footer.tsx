@@ -10,7 +10,7 @@ export default function Footer() {
         <ul aria-label="Social links" className="flex list-none flex-wrap gap-2 p-0">
           {social.map((item) => (
             <li key={item.href}>
-              <a href={item.href} target="_blank" rel="noreferrer noopener" className={navLinkClass}>
+              <a href={item.href} target="_blank" rel="noreferrer noopener" className={navLinkClass()}>
                 {item.label}
               </a>
             </li>
