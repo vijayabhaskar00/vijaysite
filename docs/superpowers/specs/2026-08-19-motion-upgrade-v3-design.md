@@ -128,12 +128,14 @@ only the `Tilt` rotation these cards already have (v2) stays gated behind
 
 ### 5. Sitewide — magnetic links
 
-A new `Magnetic` wrapper (same spring primitive as `Tilt`) applies to nav
-links, footer/contact social links, and the homepage `ArrowLink` CTAs: on
+A new `Magnetic` wrapper (same spring primitive as `Tilt`) applies to
+`Header`'s nav links, the social links rendered on the Contact page and in
+the homepage's own contact section, and the homepage `ArrowLink` CTAs: on
 pointer proximity within the element's own bounds, it nudges a few pixels
 toward the cursor and springs back on leave. Gated behind
 `useCanAnimate()`, same plain-wrapper fallback pattern as every other v2/v3
-component.
+component. `Footer`'s own copy of the social links is explicitly excluded
+— see Decisions above.
 
 ### 6. Header — morphing active-nav indicator
 
