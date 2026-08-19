@@ -54,10 +54,6 @@ body {
   filter: grayscale(0);
 }
 
-.split-char {
-  display: inline-block;
-}
-
 /* Animated underline sweep for inline text links (mailto, "View full
    profile" CTAs) — a transform on a pseudo-element rather than a
    text-decoration toggle, so it can ease in and out instead of snapping.
@@ -85,70 +81,8 @@ body {
   transform-origin: left;
 }
 
-/* Motion, gated behind prefers-reduced-motion in one shared block. Every
-   element it touches is fully visible/static by default; this only adds
-   the entrance stagger, the scroll-triggered reveal, the ticker loop (and
-   its hover-pause), the photo zoom, and the underline easing on top when
-   motion is allowed. */
+/* Motion, gated behind prefers-reduced-motion in one shared block. */
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes reveal-up {
-    from {
-      opacity: 0;
-      transform: translateY(14px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Longhand properties only — deliberately NOT the `animation` shorthand.
-     The shorthand implicitly resets animation-delay to 0, which silently
-     cancels every per-element `[animation-delay:Nms]` stagger callers set
-     via Tailwind arbitrary values. */
-  .reveal {
-    animation-name: reveal-up;
-    animation-duration: 0.7s;
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-    animation-fill-mode: both;
-  }
-
-  @keyframes split-char-up {
-    from {
-      opacity: 0;
-      transform: translateY(60%) rotate(4deg);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) rotate(0deg);
-    }
-  }
-
-  .split-char {
-    opacity: 0;
-    animation-name: split-char-up;
-    animation-duration: 0.6s;
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-    animation-fill-mode: both;
-  }
-
-  /* Scroll-triggered sibling of .reveal, driven by the Reveal component
-     toggling is-pending/is-visible on intersection instead of firing once
-     on load. Transition (not @keyframes) since the JS owns the timing of
-     when the class flips. */
-  .reveal-scroll.is-pending {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  .reveal-scroll.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition:
-      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
   @keyframes marquee {
     from {
       transform: translateX(0);
@@ -186,9 +120,11 @@ body {
 }
 
 /* Slow-scrolling credentials ticker beneath the hero — the page's one
-   kinetic-type signature move. The track holds two identical copies of
-   its content so it can loop seamlessly; reduced-motion hides the
-   second copy and leaves the first sitting still instead of animating. */
+   pure-CSS kinetic-type move, deliberately left as-is by the Framer Motion
+   upgrade (see docs/superpowers/specs/2026-08-19-motion-upgrade-v2-design.md).
+   The track holds two identical copies of its content so it can loop
+   seamlessly; reduced-motion hides the second copy and leaves the first
+   sitting still instead of animating. */
 .marquee-track {
   display: flex;
   width: max-content;
