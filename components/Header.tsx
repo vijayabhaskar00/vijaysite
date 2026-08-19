@@ -17,7 +17,12 @@ import { useCanAnimate } from "@/lib/motion";
  * time for every statically exported route); only the *sliding* layoutId
  * morph between pills on navigation is gated behind useCanAnimate(). */
 export default function Header() {
-  const pathname = usePathname();
+  // next.config.mjs sets trailingSlash: true, so usePathname() returns
+  // "/about/" (not "/about") for every route except the root -- normalize
+  // before comparing against nav[].href (which never has a trailing
+  // slash), or every non-home page's active state silently never matches.
+  const rawPathname = usePathname();
+  const pathname = rawPathname && rawPathname !== "/" ? rawPathname.replace(/\/$/, "") : rawPathname;
   const canAnimate = useCanAnimate();
 
   return (
