@@ -4,6 +4,7 @@ import { site, social } from "@/content/site";
 import { linkClass, navLinkClass } from "@/lib/ui";
 import Reveal from "@/components/Reveal";
 import SplitText from "@/components/SplitText";
+import Magnetic from "@/components/motion/Magnetic";
 
 export const metadata: Metadata = buildMetadata({
   title: "Contact",
@@ -22,18 +23,22 @@ export default function ContactPage() {
           <SplitText text="Get in touch." />
         </h1>
         <p className="mt-8">
-          <a href={`mailto:${site.email}`} className={`text-lg ${linkClass}`}>
-            {site.email}
-          </a>
+          <Magnetic>
+            <a href={`mailto:${site.email}`} className={`text-lg ${linkClass}`}>
+              {site.email}
+            </a>
+          </Magnetic>
         </p>
       </Reveal>
       <Reveal delayMs={120}>
         <ul aria-label="Social links" className="mt-10 flex list-none flex-wrap gap-2 p-0 pt-8">
           {social.map((item) => (
             <li key={item.href}>
-              <a href={item.href} target="_blank" rel="noreferrer noopener" className={navLinkClass()}>
-                {item.label}
-              </a>
+              <Magnetic>
+                <a href={item.href} target="_blank" rel="noreferrer noopener" className={navLinkClass()}>
+                  {item.label}
+                </a>
+              </Magnetic>
             </li>
           ))}
         </ul>

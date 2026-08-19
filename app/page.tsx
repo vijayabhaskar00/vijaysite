@@ -6,6 +6,7 @@ import StatBand from "@/components/StatBand";
 import Reveal from "@/components/Reveal";
 import OrgLogoGrid from "@/components/OrgLogoGrid";
 import OrgMark from "@/components/OrgMark";
+import Magnetic from "@/components/motion/Magnetic";
 import { linkClass, navLinkClass } from "@/lib/ui";
 
 const EXPERIENCE_HIGHLIGHTS: (TimelineEntry & { number: string })[] = [
@@ -16,12 +17,14 @@ const EXPERIENCE_HIGHLIGHTS: (TimelineEntry & { number: string })[] = [
 
 function ArrowLink({ href, children }: { href: string; children: string }) {
   return (
-    <Link href={href} className={`mt-6 inline-block ${linkClass}`}>
-      {children}{" "}
-      <span className="inline-block motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:translate-x-1">
-        →
-      </span>
-    </Link>
+    <Magnetic className="mt-6">
+      <Link href={href} className={linkClass}>
+        {children}{" "}
+        <span className="inline-block motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:translate-x-1">
+          →
+        </span>
+      </Link>
+    </Magnetic>
   );
 }
 
@@ -82,16 +85,20 @@ export default function HomePage() {
         </p>
         <h2 className="mt-4 font-display text-4xl font-bold text-ink sm:text-5xl">Get in touch.</h2>
         <p className="mt-6">
-          <a href={`mailto:${site.email}`} className={`text-lg ${linkClass}`}>
-            {site.email}
-          </a>
+          <Magnetic>
+            <a href={`mailto:${site.email}`} className={`text-lg ${linkClass}`}>
+              {site.email}
+            </a>
+          </Magnetic>
         </p>
         <ul aria-label="Social links" className="mt-6 flex list-none flex-wrap justify-center gap-2 p-0">
           {social.map((item) => (
             <li key={item.href}>
-              <a href={item.href} target="_blank" rel="noreferrer noopener" className={navLinkClass()}>
-                {item.label}
-              </a>
+              <Magnetic>
+                <a href={item.href} target="_blank" rel="noreferrer noopener" className={navLinkClass()}>
+                  {item.label}
+                </a>
+              </Magnetic>
             </li>
           ))}
         </ul>
