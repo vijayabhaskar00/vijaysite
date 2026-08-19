@@ -13,19 +13,24 @@ interface OrgMarkProps {
  * experience timeline), so the mark itself can stay decorative. */
 export default function OrgMark({ org, className }: OrgMarkProps) {
   const src = orgLogos[org];
-  const classes = ["org-mark", className].filter(Boolean).join(" ");
+  const classes = ["flex items-center justify-center", className].filter(Boolean).join(" ");
 
   if (src) {
     return (
       <div className={classes}>
-        <img src={resolveAssetPath(src)} alt={`${org} logo`} loading="lazy" />
+        <img
+          src={resolveAssetPath(src)}
+          alt={`${org} logo`}
+          loading="lazy"
+          className="max-h-full max-w-full object-contain"
+        />
       </div>
     );
   }
 
   return (
     <div className={classes} aria-hidden="true">
-      <span className="org-mark-monogram">{monogramFor(org)}</span>
+      <span className="font-display text-2xl font-extrabold text-mute">{monogramFor(org)}</span>
     </div>
   );
 }

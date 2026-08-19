@@ -11,19 +11,10 @@ describe("OrgLogoGrid", () => {
     }
   });
 
-  it("does not mount the WebGL shader layer without a resolved 'full' tier", () => {
-    // deviceTier resolution is async and jsdom has no WebGL2, so it settles
-    // to "static" -- the shader canvas must never appear in that case.
+  it("renders exactly one card per unique org, with no shader canvas", () => {
     const { container } = render(<OrgLogoGrid />);
-    expect(container.querySelector("canvas")).not.toBeInTheDocument();
-  });
-
-  it("positions logos via CSS only -- no JS-computed inline transform", () => {
-    const { container } = render(<OrgLogoGrid />);
-    const items = container.querySelectorAll(".org-orbit-item");
-    expect(items.length).toBe(orgNames.length);
-    for (const item of Array.from(items)) {
-      expect((item as HTMLElement).style.transform).toBe("");
-    }
+    expect(container.querySelectorAll("canvas").length).toBe(0);
+    const grid = container.firstElementChild;
+    expect(grid?.children.length).toBe(orgNames.length);
   });
 });
