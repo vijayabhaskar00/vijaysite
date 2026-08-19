@@ -14,11 +14,11 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <section className="py-24 text-center sm:py-32">
-      <p className="font-mono text-sm uppercase tracking-widest text-amber">404</p>
-      <h1 className="mt-3 font-display text-4xl font-bold uppercase text-paper sm:text-5xl">
-        Page not found
-      </h1>
+    <section className="mx-auto max-w-md rounded-[2rem] bg-surface px-8 py-16 text-center shadow-clay-raised sm:py-20">
+      <p className="inline-block rounded-full bg-clay-amber-light px-4 py-1 text-xs font-semibold uppercase tracking-wide text-clay-amber">
+        404
+      </p>
+      <h1 className="mt-4 font-display text-4xl font-bold text-ink sm:text-5xl">Page not found</h1>
       <p className="mx-auto mt-4 max-w-md text-mute">
         The page you&rsquo;re looking for doesn&rsquo;t exist or has moved.
       </p>
