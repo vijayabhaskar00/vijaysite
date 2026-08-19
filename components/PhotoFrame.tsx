@@ -18,7 +18,9 @@ export default function PhotoFrame({
   className,
   loading = "lazy",
 }: PhotoFrameProps) {
-  const frameClassName = ["photo-frame", className].filter(Boolean).join(" ");
+  const frameClassName = ["photo-frame", "rounded-[2rem] shadow-clay-raised", className]
+    .filter(Boolean)
+    .join(" ");
   const resolvedSrc = resolveAssetPath(src);
   return (
     <div className={frameClassName}>
