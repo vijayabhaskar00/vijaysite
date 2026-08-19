@@ -1,21 +1,14 @@
-import { Big_Shoulders_Display, Manrope, IBM_Plex_Mono } from "next/font/google";
+import { Baloo_2, Nunito } from "next/font/google";
 
-export const bigShoulders = Big_Shoulders_Display({
+export const baloo2 = Baloo_2({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
-  weight: ["700", "900"],
+  weight: ["600", "700", "800"],
 });
 
-export const manrope = Manrope({
+export const nunito = Nunito({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap",
-});
-
-export const plexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-  weight: ["400", "500"],
 });
