@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { stats } from "@/content/site";
 import StatCounter from "@/components/StatCounter";
+import Spotlight from "@/components/motion/Spotlight";
 import { useCanAnimate, fadeUpItem, staggerContainer } from "@/lib/motion";
 
 const ACCENTS = [
@@ -31,12 +32,12 @@ export default function StatBand() {
     return (
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {stats.map((stat, index) => (
-          <div
+          <Spotlight
             key={stat.label}
             className={`rounded-[2rem] ${ACCENTS[index % ACCENTS.length].bg} p-6 text-center shadow-clay-raised`}
           >
             <Tile label={stat.label} value={stat.value} index={index} />
-          </div>
+          </Spotlight>
         ))}
       </div>
     );
@@ -51,12 +52,12 @@ export default function StatBand() {
       viewport={{ once: true, amount: 0.15 }}
     >
       {stats.map((stat, index) => (
-        <motion.div
-          key={stat.label}
-          variants={fadeUpItem}
-          className={`rounded-[2rem] ${ACCENTS[index % ACCENTS.length].bg} p-6 text-center shadow-clay-raised`}
-        >
-          <Tile label={stat.label} value={stat.value} index={index} />
+        <motion.div key={stat.label} variants={fadeUpItem}>
+          <Spotlight
+            className={`rounded-[2rem] ${ACCENTS[index % ACCENTS.length].bg} p-6 text-center shadow-clay-raised`}
+          >
+            <Tile label={stat.label} value={stat.value} index={index} />
+          </Spotlight>
         </motion.div>
       ))}
     </motion.div>

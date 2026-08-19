@@ -4,14 +4,15 @@ import { motion } from "framer-motion";
 import { orgNames } from "@/content/site";
 import OrgMark from "@/components/OrgMark";
 import Tilt from "@/components/motion/Tilt";
+import Spotlight from "@/components/motion/Spotlight";
 import { useCanAnimate, fadeUpItem, staggerContainer } from "@/lib/motion";
 
 function Card({ org }: { org: string }) {
   return (
-    <div className="flex h-full flex-col items-center rounded-[2rem] bg-surface p-5 text-center shadow-clay-raised">
+    <Spotlight className="flex h-full flex-col items-center rounded-[2rem] bg-surface p-5 text-center shadow-clay-raised">
       <OrgMark org={org} className="h-16 w-16" />
       <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-mute">{org}</p>
-    </div>
+    </Spotlight>
   );
 }
 
