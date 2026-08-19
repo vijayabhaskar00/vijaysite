@@ -24,4 +24,12 @@ describe("SplitText", () => {
     render(<SplitText text="Hi" baseDelayMs={100} staggerMs={20} />);
     expect(screen.getAllByTestId("split-char")).toHaveLength(2);
   });
+
+  it("keeps each word's characters inside one inline-block wrapper, so a line can only break between words, never inside one", () => {
+    render(<SplitText text="A B" />);
+    const [charA, charB] = screen.getAllByTestId("split-char");
+    expect(charA.parentElement).toHaveClass("inline-block");
+    expect(charB.parentElement).toHaveClass("inline-block");
+    expect(charA.parentElement).not.toBe(charB.parentElement);
+  });
 });
