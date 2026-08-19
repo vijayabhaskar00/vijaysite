@@ -81,6 +81,36 @@ body {
   transform-origin: left;
 }
 
+/* Cursor-tracking glow on card surfaces (OrgLogoGrid, StatBand) -- pure
+   position tracking via a CSS custom property set on pointermove, with no
+   translate/scale of its own. Like .photo-frame's grayscale-to-color
+   fade, it runs unconditionally regardless of prefers-reduced-motion: an
+   opacity fade on a static-position glow, not a movement. z-index: -1
+   inside its own isolated stacking context keeps it above the card's own
+   background but below the card's actual content, without needing to
+   touch that content's markup. */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(220px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(255, 255, 255, 0.55), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.spotlight:hover::before,
+.spotlight:focus-within::before {
+  opacity: 1;
+}
+
 /* Motion, gated behind prefers-reduced-motion in one shared block. */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes marquee {

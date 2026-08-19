@@ -1,6 +1,6 @@
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { useCanAnimate } from "../motion";
+import { useCanAnimate, POINTER_SPRING } from "../motion";
 
 class StubIntersectionObserver {
   observe() {}
@@ -39,5 +39,11 @@ describe("useCanAnimate", () => {
     const { result } = renderHook(() => useCanAnimate());
     await act(async () => {});
     expect(result.current).toBe(false);
+  });
+});
+
+describe("POINTER_SPRING", () => {
+  it("is the shared spring config used by every cursor-driven component", () => {
+    expect(POINTER_SPRING).toEqual({ stiffness: 300, damping: 20 });
   });
 });

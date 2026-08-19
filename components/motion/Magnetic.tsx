@@ -4,26 +4,27 @@ import { useRef, type PointerEvent, type ReactNode } from "react";
 import { motion, useSpring } from "framer-motion";
 import { useCanAnimate, POINTER_SPRING } from "@/lib/motion";
 
-interface TiltProps {
+interface MagneticProps {
   children: ReactNode;
   className?: string;
 }
 
-const MAX_ROTATION_DEG = 8;
+const MAX_NUDGE_PX = 8;
 
-/** Wraps children in a small pointer-following 3D tilt on hover -- a CSS
- * transform (perspective + rotateX/rotateY), not WebGL. Renders an inert
- * plain wrapper (no listeners, no transform) whenever useCanAnimate() is
- * false, so reduced-motion visitors and pre-hydration/no-JS output are
- * completely unaffected. */
-export default function Tilt({ children, className }: TiltProps) {
+/** Nudges its children a few pixels toward the cursor when it's over the
+ * element, springing back on leave -- the same POINTER_SPRING primitive
+ * Tilt uses, applied to x/y translation instead of rotation. Always
+ * renders as an inline-block wrapper (in both branches, so there's no
+ * layout shift when useCanAnimate() flips), with zero listeners/style
+ * whenever useCanAnimate() is false. */
+export default function Magnetic({ children, className }: MagneticProps) {
   const canAnimate = useCanAnimate();
   const ref = useRef<HTMLDivElement>(null);
-  const rotateX = useSpring(0, POINTER_SPRING);
-  const rotateY = useSpring(0, POINTER_SPRING);
+  const x = useSpring(0, POINTER_SPRING);
+  const y = useSpring(0, POINTER_SPRING);
 
   if (!canAnimate) {
-    return <div className={className}>{children}</div>;
+    return <div className={`inline-block ${className ?? ""}`}>{children}</div>;
   }
 
   const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
@@ -32,20 +33,20 @@ export default function Tilt({ children, className }: TiltProps) {
     const rect = node.getBoundingClientRect();
     const px = (event.clientX - rect.left) / rect.width - 0.5;
     const py = (event.clientY - rect.top) / rect.height - 0.5;
-    rotateY.set(px * MAX_ROTATION_DEG * 2);
-    rotateX.set(py * -MAX_ROTATION_DEG * 2);
+    x.set(px * MAX_NUDGE_PX * 2);
+    y.set(py * MAX_NUDGE_PX * 2);
   };
 
   const handlePointerLeave = () => {
-    rotateX.set(0);
-    rotateY.set(0);
+    x.set(0);
+    y.set(0);
   };
 
   return (
     <motion.div
       ref={ref}
-      className={className}
-      style={{ rotateX, rotateY, transformPerspective: 800 }}
+      className={`inline-block ${className ?? ""}`}
+      style={{ x, y }}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >

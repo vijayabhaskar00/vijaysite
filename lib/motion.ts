@@ -6,6 +6,11 @@ import { prefersReducedMotion } from "@/components/motion/deviceTier";
  * one language. */
 export const EASE = [0.16, 1, 0.3, 1] as const;
 
+/** Spring tuning shared by every pointer-driven motion value in this app
+ * (Tilt's rotation, Magnetic's nudge, HomeHero's parallax layers) -- one
+ * constant so they all feel like the same physical material. */
+export const POINTER_SPRING = { stiffness: 300, damping: 20 };
+
 /** A single fade-up entrance step, for use as a `variants` value on a
  * motion element that's a direct child of a `staggerContainer`. */
 export const fadeUpItem = {
