@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useLayoutEffect, useState, type ReactNode } from "react";
 import { prefersReducedMotion } from "@/components/motion/deviceTier";
+import { EASE } from "@/lib/motion";
 
 // useLayoutEffect warns when it runs during SSR; useEffect is a safe
 // stand-in there since nothing paints server-side anyway (same pattern as
@@ -47,9 +48,9 @@ export default function Template({ children }: { children: ReactNode }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ opacity: 0, y: 16, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.5, ease: EASE }}
     >
       {children}
     </motion.div>

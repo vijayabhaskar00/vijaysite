@@ -8,7 +8,8 @@ const focusRingClass = "focus-visible:outline-none focus-visible:ring-2 focus-vi
 // lets an arrow glyph nested inside react to group-hover (see app/page.tsx).
 export const linkClass = `link-sweep group font-semibold text-clay-amber rounded-sm ${focusRingClass}`;
 
-// Pill-shaped nav/social links: fills with the site's primary accent on
-// hover/focus and presses in on click, replacing the old underline-sweep +
-// mono-uppercase treatment.
-export const navLinkClass = `inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold text-ink shadow-clay-raised transition-colors duration-300 hover:bg-clay-amber hover:text-surface focus-visible:bg-clay-amber focus-visible:text-surface active:shadow-clay-pressed ${focusRingClass}`;
+// Pill-shaped nav/social links: fills with the site's primary accent and
+// scales up slightly on hover/focus, presses back down on click --
+// motion-safe: means this stays purely a color change under
+// prefers-reduced-motion, with zero JS involved either way.
+export const navLinkClass = `inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold text-ink shadow-clay-raised transition-[background-color,color,transform] duration-300 hover:bg-clay-amber hover:text-surface focus-visible:bg-clay-amber focus-visible:text-surface motion-safe:hover:scale-[1.03] motion-safe:focus-visible:scale-[1.03] motion-safe:active:scale-95 active:shadow-clay-pressed ${focusRingClass}`;
