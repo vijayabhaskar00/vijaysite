@@ -7,6 +7,7 @@ import Reveal from "@/components/Reveal";
 import OrgLogoGrid from "@/components/OrgLogoGrid";
 import OrgMark from "@/components/OrgMark";
 import Magnetic from "@/components/motion/Magnetic";
+import AmbientColorDrift from "@/components/motion/AmbientColorDrift";
 import { linkClass, navLinkClass } from "@/lib/ui";
 
 const EXPERIENCE_HIGHLIGHTS: (TimelineEntry & { number: string })[] = [
@@ -31,6 +32,7 @@ function ArrowLink({ href, children }: { href: string; children: string }) {
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-12 sm:gap-16">
+      <AmbientColorDrift />
       <HomeHero />
 
       <Reveal>
