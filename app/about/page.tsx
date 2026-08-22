@@ -4,7 +4,10 @@ import { site } from "@/content/site";
 import PhotoFrame from "@/components/PhotoFrame";
 import Reveal from "@/components/Reveal";
 import SplitText from "@/components/SplitText";
+import OrgMark from "@/components/OrgMark";
 import Tilt from "@/components/motion/Tilt";
+
+const AFFILIATIONS = ["stuMagz", "Microsoft", "Behance", "ATAL Innovation Mission, Niti Aayog – GOI"];
 
 export const metadata: Metadata = buildMetadata({
   title: "About",
@@ -39,6 +42,22 @@ export default function AboutPage() {
           &ldquo;{site.tagline}&rdquo; &mdash; based in {site.location}, working across education,
           innovation mentorship, and product design.
         </p>
+        <div className="mt-10">
+          <p className="inline-block rounded-full bg-surface px-4 py-1 text-xs font-semibold uppercase tracking-wide text-mute">
+            Where the work has taken him
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            {AFFILIATIONS.map((org) => (
+              <div
+                key={org}
+                className="flex items-center gap-2.5 rounded-full bg-surface py-2 pl-2 pr-4 shadow-clay-raised"
+              >
+                <OrgMark org={org} className="h-7 w-7" />
+                <span className="text-sm font-semibold text-mute">{org}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </Reveal>
     </section>
   );
