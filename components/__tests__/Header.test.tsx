@@ -41,4 +41,17 @@ describe("Header", () => {
     const { container } = render(<Header />);
     expect(container.innerHTML).not.toMatch(/opacity:\s*0(?!\.)/);
   });
+
+  it("aligns the nav+theme-toggle row to the top, not the center, so the toggle doesn't float between the nav's wrapped rows on narrow viewports", () => {
+    // Regression test: with items-center, the toggle -- a flex sibling of
+    // <nav>, not of the individual pills -- centered against the *whole*
+    // wrapped height once <nav>'s <ul> wrapped to a second row on mobile,
+    // landing it visually straddling both rows instead of level with the
+    // first. Confirmed live with Playwright at a 390px viewport.
+    render(<Header />);
+    const nav = screen.getByRole("navigation", { name: "Primary" });
+    const wrapper = nav.parentElement;
+    expect(wrapper).toHaveClass("items-start");
+    expect(wrapper).not.toHaveClass("items-center");
+  });
 });

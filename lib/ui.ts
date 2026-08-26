@@ -20,7 +20,19 @@ export function navLinkClass(active = false): string {
   const state = active
     ? "text-surface"
     : "text-ink hover:bg-clay-amber hover:text-surface focus-visible:bg-clay-amber focus-visible:text-surface";
-  return `inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold shadow-clay-raised transition-[background-color,color,transform] duration-300 motion-safe:hover:scale-[1.03] motion-safe:focus-visible:scale-[1.03] motion-safe:active:scale-95 active:shadow-clay-pressed ${state} ${focusRingClass}`;
+  // relative z-10: Header renders the active-page pill as a separate
+  // `absolute inset-0` sibling behind this link (see Header.tsx), for the
+  // sliding layoutId morph between pages. Without an explicit stacking
+  // context of its own, this link's z-index stays "auto" -- and a
+  // positioned sibling with z-index:auto still paints ABOVE non-positioned
+  // in-flow content regardless of DOM order, so the pill silently covered
+  // the label text entirely (confirmed live: elementFromPoint at the
+  // link's center returned the pill span, not the link). `relative z-10`
+  // gives this link its own explicit stacking order, unambiguously above
+  // the pill's z-index:auto. Harmless on every other navLinkClass() call
+  // site (Footer, social links, ...) that has no such sibling to stack
+  // against.
+  return `relative z-10 inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold shadow-clay-raised transition-[background-color,color,transform] duration-300 motion-safe:hover:scale-[1.03] motion-safe:focus-visible:scale-[1.03] motion-safe:active:scale-95 active:shadow-clay-pressed ${state} ${focusRingClass}`;
 }
 
 // A solid, always-filled clay-amber pill for the one primary action on a
