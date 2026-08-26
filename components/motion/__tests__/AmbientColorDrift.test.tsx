@@ -57,4 +57,39 @@ describe("AmbientColorDrift", () => {
     // the whole point of this test.
     expect(layer.style.backgroundColor).toBe("rgb(27, 20, 15)");
   });
+
+  it("re-tints to the dark stops when the theme switches AFTER mount, not just when it starts dark", async () => {
+    // Regression test: a real visitor toggles dark mode mid-session far
+    // more often than they land with it already on, and that path had a
+    // real bug -- useTransform's backgroundColor motion value recomputed
+    // correctly internally (confirmed via .get()) but the already-mounted
+    // <motion.div>'s DOM style kept tracking the light stops regardless,
+    // verified live with Playwright by toggling dark mode and scrolling:
+    // the rendered backgroundColor never left the light palette. Fixed by
+    // giving the element key={theme} so a theme change unmounts/remounts
+    // it with a fresh MotionValue instead of reusing the stale one.
+    class StubIntersectionObserver {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    vi.stubGlobal("IntersectionObserver", StubIntersectionObserver);
+
+    const { container } = render(<AmbientColorDrift />);
+
+    await waitFor(() => {
+      const el = container.querySelector('[aria-hidden="true"]') as HTMLElement | null;
+      expect(el?.style.backgroundColor).toBe("rgb(251, 243, 231)"); // light cream
+    });
+
+    // Mirrors lib/theme.ts's applyTheme(): set the DOM attribute, then
+    // fire the same event useTheme() listens for.
+    document.documentElement.setAttribute("data-theme", "dark");
+    window.dispatchEvent(new Event("sitethemechange"));
+
+    await waitFor(() => {
+      const el = container.querySelector('[aria-hidden="true"]') as HTMLElement | null;
+      expect(el?.style.backgroundColor).toBe("rgb(27, 20, 15)"); // dark cream
+    });
+  });
 });

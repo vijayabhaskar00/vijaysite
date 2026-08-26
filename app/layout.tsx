@@ -17,7 +17,15 @@ export const metadata: Metadata = buildMetadata({
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${baloo2.variable} ${nunito.variable}`}>
+    <html
+      lang="en"
+      className={`${baloo2.variable} ${nunito.variable}`}
+      // The theme-bootstrap script below sets data-theme on this element
+      // before hydration, which never matches the (theme-less) server
+      // markup -- an expected, intentional mismatch (see that script's
+      // comment), not a real one for React to warn about.
+      suppressHydrationWarning
+    >
       <body className="flex min-h-screen flex-col bg-cream font-body text-ink">
         {/* Sets data-theme on <html> before first paint, from a stored
             choice or (failing that) the OS preference -- beforeInteractive

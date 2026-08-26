@@ -61,7 +61,24 @@ export default function AmbientColorDrift() {
     return null;
   }
 
+  // key={theme} forces React to unmount and remount this element -- with
+  // a fresh MotionValue and a fresh DOM-write subscription -- whenever
+  // the theme flips, instead of reusing the mounted element across the
+  // change. Reusing it is the bug this fixes: useTransform's synchronous
+  // updateValue() call does recompute the *value* correctly on a
+  // theme-triggered re-render (confirmed via backgroundColor.get()), but
+  // that update does not reliably reach the DOM style on an
+  // already-mounted <motion.div> -- verified by inspecting the live
+  // computed backgroundColor after toggling, which kept tracking
+  // LIGHT_COLOR_STOPS at every scroll position after switching to dark.
+  // A clean remount sidesteps that stale-subscription class of bug
+  // entirely rather than chasing it inside Framer Motion's internals.
   return (
-    <motion.div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-30" style={{ backgroundColor }} />
+    <motion.div
+      key={theme}
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 -z-30"
+      style={{ backgroundColor }}
+    />
   );
 }
