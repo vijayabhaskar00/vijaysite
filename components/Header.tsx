@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { nav, site } from "@/content/site";
 import Magnetic from "@/components/motion/Magnetic";
+import ThemeToggle from "@/components/ThemeToggle";
 import { navLinkClass } from "@/lib/ui";
 import { useCanAnimate } from "@/lib/motion";
 
@@ -36,36 +37,39 @@ export default function Header() {
             {site.shortName}
           </Link>
         </Magnetic>
-        <nav aria-label="Primary">
-          <ul className="flex list-none flex-wrap items-center gap-2 p-0">
-            {nav.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <li key={item.href} className="relative">
-                  {isActive &&
-                    (canAnimate ? (
-                      <motion.span
-                        layoutId="active-nav-pill"
-                        className="absolute inset-0 rounded-full bg-clay-amber"
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                      />
-                    ) : (
-                      <span aria-hidden="true" className="absolute inset-0 rounded-full bg-clay-amber" />
-                    ))}
-                  <Magnetic>
-                    <Link
-                      href={item.href}
-                      aria-current={isActive ? "page" : undefined}
-                      className={navLinkClass(isActive)}
-                    >
-                      {item.label}
-                    </Link>
-                  </Magnetic>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
+        <div className="flex items-center gap-3">
+          <nav aria-label="Primary">
+            <ul className="flex list-none flex-wrap items-center gap-2 p-0">
+              {nav.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <li key={item.href} className="relative">
+                    {isActive &&
+                      (canAnimate ? (
+                        <motion.span
+                          layoutId="active-nav-pill"
+                          className="absolute inset-0 rounded-full bg-clay-amber"
+                          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                        />
+                      ) : (
+                        <span aria-hidden="true" className="absolute inset-0 rounded-full bg-clay-amber" />
+                      ))}
+                    <Magnetic>
+                      <Link
+                        href={item.href}
+                        aria-current={isActive ? "page" : undefined}
+                        className={navLinkClass(isActive)}
+                      >
+                        {item.label}
+                      </Link>
+                    </Magnetic>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

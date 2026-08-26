@@ -1,13 +1,16 @@
 "use client";
 
 import { useRef, type PointerEvent } from "react";
+import Link from "next/link";
 import { motion, useMotionValue, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
 import { site, orgNames } from "@/content/site";
 import PhotoFrame from "@/components/PhotoFrame";
 import Marquee from "@/components/Marquee";
 import Tilt from "@/components/motion/Tilt";
+import Magnetic from "@/components/motion/Magnetic";
 import LineReveal from "@/components/motion/LineReveal";
 import { useCanAnimate, fadeUpItem, staggerContainer, POINTER_SPRING } from "@/lib/motion";
+import { primaryButtonClass } from "@/lib/ui";
 
 // How far each hero layer drifts from the pointer's center-relative
 // position, in px -- the blob (purely decorative) moves the most, the
@@ -44,11 +47,11 @@ function ClayBlobBackdrop({ parallaxX, parallaxY }: ParallaxProps) {
       style={canAnimate ? { x: parallaxX, y, scale } : undefined}
     >
       <path
-        fill="#FBE0C4"
+        className="fill-clay-amber-light"
         d="M281,305Q246,360,183,347Q120,334,88,281Q56,228,80,169Q104,110,163,86Q222,62,272,101Q322,140,323,199Q324,258,281,305Z"
       />
       <path
-        fill="#FBE1E9"
+        className="fill-clay-pink-light"
         opacity="0.8"
         d="M255,120Q270,180,235,220Q200,260,150,245Q100,230,90,175Q80,120,125,90Q170,60,215,80Q260,100,255,120Z"
       />
@@ -133,6 +136,17 @@ export default function HomeHero() {
     </div>
   );
 
+  const cta = (
+    <Magnetic className="mt-8">
+      <Link href="/contact" className={`group ${primaryButtonClass}`}>
+        Let&rsquo;s talk
+        <span aria-hidden="true" className="inline-block motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:translate-x-1">
+          →
+        </span>
+      </Link>
+    </Magnetic>
+  );
+
   const marquee = (
     <Marquee
       items={orgNames}
@@ -148,6 +162,7 @@ export default function HomeHero() {
           {pill}
           {heading}
           {descriptionRow}
+          {cta}
         </section>
         {marquee}
       </>
@@ -169,6 +184,7 @@ export default function HomeHero() {
             {heading}
           </motion.div>
           <motion.div variants={fadeUpItem}>{descriptionRow}</motion.div>
+          <motion.div variants={fadeUpItem}>{cta}</motion.div>
         </motion.div>
       </section>
       <motion.div variants={fadeUpItem}>{marquee}</motion.div>

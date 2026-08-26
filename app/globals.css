@@ -2,6 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Design tokens as CSS custom properties -- the single source of truth for
+   every color/shadow value tailwind.config.ts exposes as a utility class
+   (bg-cream, text-ink, shadow-clay-raised, ...). Routing the whole palette
+   through variables here, rather than baking literal hex into the Tailwind
+   config, is what lets [data-theme="dark"] below re-theme every existing
+   utility class site-wide with zero changes to any component file -- every
+   className that already reads e.g. "bg-surface" keeps working unchanged
+   in both themes.
+
+   Colors are stored as space-separated "R G B" triples, not hex or
+   rgba(): tailwind.config.ts wraps each one as rgb(var(--x) / <alpha-value>),
+   Tailwind's documented pattern for CSS-variable theme colors that still
+   need to support opacity-modifier utilities (text-ink/70, bg-ink/10,
+   focus-visible:ring-clay-amber/40 -- all real, in-use classes here,
+   including the site-wide focus ring in lib/ui.ts). A plain hex or
+   var(--x) string would have silently dropped every one of those opacity
+   utilities from the compiled CSS instead of erroring -- caught by `npm
+   run verify:export`, not the build or typecheck. Light values are
+   unchanged from the original palette (#fbf3e7 = 251 243 231, etc). */
+:root {
+  --color-cream: 251 243 231;
+  --color-surface: 255 253 248;
+  --color-ink: 44 32 19;
+  --color-mute: 122 107 87;
+  --color-clay-amber: 226 112 31;
+  --color-clay-amber-light: 251 224 196;
+  --color-clay-teal: 63 167 158;
+  --color-clay-teal-light: 216 240 236;
+  --color-clay-pink: 239 127 168;
+  --color-clay-pink-light: 251 225 233;
+  --color-clay-lavender: 123 135 245;
+  --color-clay-lavender-light: 229 230 253;
+  --shadow-clay-raised: 8px 8px 20px rgba(44, 32, 19, 0.18), -6px -6px 16px rgba(255, 255, 255, 0.8);
+  --shadow-clay-pressed: inset 4px 4px 10px rgba(44, 32, 19, 0.18), inset -4px -4px 10px rgba(255, 255, 255, 0.8);
+  --spotlight-glow: rgba(255, 255, 255, 0.55);
+}
+
+/* Dark theme: same clay-neumorphic language, re-tuned rather than inverted
+   -- the "light" accent tints become dark desaturated tints (still the
+   panel backdrop the accent color sits on top of, just no longer a pastel
+   next to a near-black ink), accents lift slightly for AA contrast on a
+   dark surface, and the raised/pressed shadow pair swaps its highlight
+   from white-on-cream to a faint light rim, since a bright white highlight
+   reads as a light leak rather than a raised edge on a dark material. */
+:root[data-theme="dark"] {
+  --color-cream: 27 20 15;
+  --color-surface: 36 26 19;
+  --color-ink: 243 232 218;
+  --color-mute: 183 166 142;
+  --color-clay-amber: 240 151 95;
+  --color-clay-amber-light: 58 39 23;
+  --color-clay-teal: 92 194 184;
+  --color-clay-teal-light: 23 50 47;
+  --color-clay-pink: 244 157 190;
+  --color-clay-pink-light: 58 32 41;
+  --color-clay-lavender: 163 173 223;
+  --color-clay-lavender-light: 38 42 74;
+  --shadow-clay-raised: 8px 8px 20px rgba(0, 0, 0, 0.45), -6px -6px 16px rgba(255, 255, 255, 0.04);
+  --shadow-clay-pressed: inset 4px 4px 10px rgba(0, 0, 0, 0.45), inset -4px -4px 10px rgba(255, 255, 255, 0.04);
+  --spotlight-glow: rgba(255, 255, 255, 0.12);
+}
+
 /* Reserves the scrollbar's own width permanently, so no layout shift occurs
    if any future overlay locks body scroll. */
 html {
@@ -9,8 +71,8 @@ html {
 }
 
 body {
-  background-color: #fbf3e7;
-  color: #2c2013;
+  background-color: rgb(var(--color-cream));
+  color: rgb(var(--color-ink));
 }
 
 /* Registered so `--num` is animatable (not just a plain custom property
@@ -100,7 +162,7 @@ body {
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  background: radial-gradient(220px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(255, 255, 255, 0.55), transparent 70%);
+  background: radial-gradient(220px circle at var(--spot-x, 50%) var(--spot-y, 50%), var(--spotlight-glow), transparent 70%);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;

@@ -10,7 +10,7 @@ import PhotoFrame from "@/components/PhotoFrame";
 import Tilt from "@/components/motion/Tilt";
 import Magnetic from "@/components/motion/Magnetic";
 import AmbientColorDrift from "@/components/motion/AmbientColorDrift";
-import { linkClass, navLinkClass } from "@/lib/ui";
+import { linkClass, navLinkClass, primaryButtonClass } from "@/lib/ui";
 
 const EXPERIENCE_HIGHLIGHTS: TimelineEntry[] = [employment[0], credentials[0], education[0]];
 
@@ -116,7 +116,7 @@ export default function HomePage() {
         <h2 className="mt-4 font-display text-4xl font-bold text-ink sm:text-5xl">Get in touch.</h2>
         <p className="mt-6">
           <Magnetic>
-            <a href={`mailto:${site.email}`} className={`text-lg ${linkClass}`}>
+            <a href={`mailto:${site.email}`} className={primaryButtonClass}>
               {site.email}
             </a>
           </Magnetic>
