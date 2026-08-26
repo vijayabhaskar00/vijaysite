@@ -6,6 +6,7 @@ import { themeBootstrapScript } from "@/lib/themeBootstrap";
 import { site } from "@/content/site";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SmoothScroll from "@/components/SmoothScroll";
 import "./globals.css";
 
 export const metadata: Metadata = buildMetadata({
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd()) }}
         />
+        <SmoothScroll />
         <a
           href="#main-content"
           className="sr-only rounded-full bg-clay-amber px-4 py-2 text-sm font-semibold text-surface focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50"
