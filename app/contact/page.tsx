@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import { site, social } from "@/content/site";
-import { linkClass, navLinkClass } from "@/lib/ui";
+import { navLinkClass, primaryButtonClass } from "@/lib/ui";
 import Reveal from "@/components/Reveal";
 import SplitText from "@/components/SplitText";
 import PhotoFrame from "@/components/PhotoFrame";
@@ -37,7 +37,7 @@ export default function ContactPage() {
             </h1>
             <p className="mt-6">
               <Magnetic>
-                <a href={`mailto:${site.email}`} className={`text-lg ${linkClass}`}>
+                <a href={`mailto:${site.email}`} className={primaryButtonClass}>
                   {site.email}
                 </a>
               </Magnetic>

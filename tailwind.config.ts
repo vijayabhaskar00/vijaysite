@@ -2,25 +2,49 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
+  darkMode: ["selector", '[data-theme="dark"]'],
   theme: {
     extend: {
+      // Every value here reads an "R G B" triple CSS custom property
+      // defined in app/globals.css (:root for light, :root[data-theme=
+      // "dark"] for dark) through Tailwind's documented rgb(var(--x) /
+      // <alpha-value>) pattern -- see the comment above :root in
+      // globals.css for why it's a triple rather than a resolved color:
+      // that's what keeps opacity-modifier utilities (text-ink/70,
+      // focus-visible:ring-clay-amber/40, ...) working, since Tailwind
+      // substitutes <alpha-value> with the requested opacity at build
+      // time and can only do that when it isn't blocked by an already-
+      // resolved color function. tailwind.config.test.ts checks these
+      // stay in sync with the literal values defined in globals.css.
       colors: {
-        cream: "#FBF3E7",
-        surface: "#FFFDF8",
-        ink: "#2C2013",
-        mute: "#7A6B57",
-        "clay-amber": { DEFAULT: "#E2701F", light: "#FBE0C4" },
-        "clay-teal": { DEFAULT: "#3FA79E", light: "#D8F0EC" },
-        "clay-pink": { DEFAULT: "#EF7FA8", light: "#FBE1E9" },
-        "clay-lavender": { DEFAULT: "#7B87F5", light: "#E5E6FD" },
+        cream: "rgb(var(--color-cream) / <alpha-value>)",
+        surface: "rgb(var(--color-surface) / <alpha-value>)",
+        ink: "rgb(var(--color-ink) / <alpha-value>)",
+        mute: "rgb(var(--color-mute) / <alpha-value>)",
+        "clay-amber": {
+          DEFAULT: "rgb(var(--color-clay-amber) / <alpha-value>)",
+          light: "rgb(var(--color-clay-amber-light) / <alpha-value>)",
+        },
+        "clay-teal": {
+          DEFAULT: "rgb(var(--color-clay-teal) / <alpha-value>)",
+          light: "rgb(var(--color-clay-teal-light) / <alpha-value>)",
+        },
+        "clay-pink": {
+          DEFAULT: "rgb(var(--color-clay-pink) / <alpha-value>)",
+          light: "rgb(var(--color-clay-pink-light) / <alpha-value>)",
+        },
+        "clay-lavender": {
+          DEFAULT: "rgb(var(--color-clay-lavender) / <alpha-value>)",
+          light: "rgb(var(--color-clay-lavender-light) / <alpha-value>)",
+        },
       },
       fontFamily: {
         display: ["var(--font-display)", "sans-serif"],
         body: ["var(--font-body)", "sans-serif"],
       },
       boxShadow: {
-        "clay-raised": "8px 8px 20px rgba(44, 32, 19, 0.18), -6px -6px 16px rgba(255, 255, 255, 0.8)",
-        "clay-pressed": "inset 4px 4px 10px rgba(44, 32, 19, 0.18), inset -4px -4px 10px rgba(255, 255, 255, 0.8)",
+        "clay-raised": "var(--shadow-clay-raised)",
+        "clay-pressed": "var(--shadow-clay-pressed)",
       },
     },
   },

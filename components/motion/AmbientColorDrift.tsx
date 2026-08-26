@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useCanAnimate } from "@/lib/motion";
+import { useTheme } from "@/lib/theme";
 
 // Approximate color stops across the homepage's total scroll height, one
 // per section in the order they appear on the page -- cream for the
@@ -18,7 +19,7 @@ import { useCanAnimate } from "@/lib/motion";
 // one useScroll listener per section, and reads the same to a visitor as
 // an ambient wash rather than a section-locked effect (see the spec's
 // accepted-simplification note).
-const COLOR_STOPS = [
+const LIGHT_COLOR_STOPS = [
   "#FBF3E7", // cream -- hero
   "#FBF3E7", // cream -- stats / org grid
   "#FBEBE8", // cream/clay-pink-light blend -- about
@@ -26,7 +27,20 @@ const COLOR_STOPS = [
   "#F1EDF1", // cream/clay-lavender-light blend -- contact
 ];
 
-const INPUT_RANGE = COLOR_STOPS.map((_, index) => index / (COLOR_STOPS.length - 1));
+// Same 45%-toward-each-accent blend as LIGHT_COLOR_STOPS, computed against
+// the dark theme's own cream/accent-light values (see :root[data-theme=
+// "dark"] in app/globals.css) instead of the light ones -- kept as a
+// literal array, not a runtime blend, so this stays a plain color list
+// Framer Motion can interpolate directly.
+const DARK_COLOR_STOPS = [
+  "#1B140F", // dark cream -- hero
+  "#1B140F", // dark cream -- stats / org grid
+  "#29191B", // dark cream/clay-pink-light blend -- about
+  "#19221D", // dark cream/clay-teal-light blend -- experience
+  "#201E2A", // dark cream/clay-lavender-light blend -- contact
+];
+
+const INPUT_RANGE = LIGHT_COLOR_STOPS.map((_, index) => index / (LIGHT_COLOR_STOPS.length - 1));
 
 /** A fixed, full-bleed color layer behind the homepage content, tinting
  * ambiently toward each section's accent color as the user scrolls past
@@ -35,8 +49,13 @@ const INPUT_RANGE = COLOR_STOPS.map((_, index) => index / (COLOR_STOPS.length - 
  * (globals.css) visible exactly as it is without this component at all. */
 export default function AmbientColorDrift() {
   const canAnimate = useCanAnimate();
+  const [theme] = useTheme();
   const { scrollYProgress } = useScroll();
-  const backgroundColor = useTransform(scrollYProgress, INPUT_RANGE, COLOR_STOPS);
+  const backgroundColor = useTransform(
+    scrollYProgress,
+    INPUT_RANGE,
+    theme === "dark" ? DARK_COLOR_STOPS : LIGHT_COLOR_STOPS
+  );
 
   if (!canAnimate) {
     return null;
