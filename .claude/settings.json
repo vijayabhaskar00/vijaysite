@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm test *)",
+      "Bash(npm run *)",
+      "Bash(grep -o '\\\\.text-ink\\\\\\\\/70{[^}]*}' out/_next/static/css/*.css)",
+      "Bash(grep -o '\\\\.bg-ink\\\\\\\\/10{[^}]*}' out/_next/static/css/*.css)",
+      "Bash(grep -o '\\\\.focus-visible\\\\\\\\:ring-clay-amber\\\\\\\\/40[^{]*{[^}]*}' out/_next/static/css/*.css)",
+      "Bash(node -e ' *)",
+      "Bash(node \"C:\\\\Users\\\\HP\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-HP-Documents-GitHub-vijaysite\\\\04a2a2c9-4a46-4587-89b7-5c8ebd89535c\\\\scratchpad\\\\check-css.mjs\")",
+      "Bash(git checkout *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git merge --no-ff dark-mode-and-cta-polish -m 'Merge dark-mode-and-cta-polish into main *)",
+      "Bash(git push *)",
+      "Bash(gh run *)",
+      "WebFetch(domain:www.dungyov.com)",
+      "Bash(npm view *)",
+      "Bash(npm install *)",
+      "Bash(npm audit *)"
+    ]
+  }
+}
