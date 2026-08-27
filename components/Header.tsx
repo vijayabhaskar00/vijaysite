@@ -37,7 +37,11 @@ export default function Header() {
             {site.shortName}
           </Link>
         </Magnetic>
-        <div className="flex items-center gap-3">
+        {/* items-start, not items-center: nav's <ul> wraps to a second
+            row on narrow viewports, and centering against that whole
+            wrapped block left ThemeToggle floating between the two rows
+            instead of sitting level with the first one. */}
+        <div className="flex items-start gap-3">
           <nav aria-label="Primary">
             <ul className="flex list-none flex-wrap items-center gap-2 p-0">
               {nav.map((item) => {
