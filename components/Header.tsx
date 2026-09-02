@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { nav, site } from "@/content/site";
 import Magnetic from "@/components/motion/Magnetic";
-import ThemeToggle from "@/components/ThemeToggle";
 import { navLinkClass } from "@/lib/ui";
 import { useCanAnimate } from "@/lib/motion";
 
@@ -37,13 +36,8 @@ export default function Header() {
             {site.shortName}
           </Link>
         </Magnetic>
-        {/* items-start, not items-center: nav's <ul> wraps to a second
-            row on narrow viewports, and centering against that whole
-            wrapped block left ThemeToggle floating between the two rows
-            instead of sitting level with the first one. */}
-        <div className="flex items-start gap-3">
-          <nav aria-label="Primary">
-            <ul className="flex list-none flex-wrap items-center gap-2 p-0">
+        <nav aria-label="Primary">
+          <ul className="flex list-none flex-wrap items-center gap-2 p-0">
               {nav.map((item) => {
                 const isActive = pathname === item.href;
                 return (
@@ -71,9 +65,7 @@ export default function Header() {
                 );
               })}
             </ul>
-          </nav>
-          <ThemeToggle />
-        </div>
+        </nav>
       </div>
     </header>
   );

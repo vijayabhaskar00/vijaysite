@@ -2,7 +2,6 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
-  darkMode: ["selector", '[data-theme="dark"]'],
   theme: {
     extend: {
       // Every value here reads an "R G B" triple CSS custom property

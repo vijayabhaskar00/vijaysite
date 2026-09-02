@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { site } from "@/content/site";
 import { linkClass } from "@/lib/ui";
-import Reveal from "@/components/Reveal";
+import Waypoint from "@/components/three/Waypoint";
 
 // Deliberately not using buildMetadata()'s canonical/OG wiring here — a 404
 // response shouldn't declare a canonical URL for itself. It still renders
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <Reveal>
+    <Waypoint>
       <section className="mx-auto max-w-md rounded-[2rem] bg-surface px-8 py-16 text-center shadow-clay-raised sm:py-20">
         <p className="inline-block rounded-full bg-clay-amber-light px-4 py-1 text-xs font-semibold uppercase tracking-wide text-clay-amber">
           404
@@ -28,6 +28,6 @@ export default function NotFound() {
           Back to home
         </Link>
       </section>
-    </Reveal>
+    </Waypoint>
   );
 }

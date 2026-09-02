@@ -39,31 +39,6 @@
   --spotlight-glow: rgba(255, 255, 255, 0.55);
 }
 
-/* Dark theme: same clay-neumorphic language, re-tuned rather than inverted
-   -- the "light" accent tints become dark desaturated tints (still the
-   panel backdrop the accent color sits on top of, just no longer a pastel
-   next to a near-black ink), accents lift slightly for AA contrast on a
-   dark surface, and the raised/pressed shadow pair swaps its highlight
-   from white-on-cream to a faint light rim, since a bright white highlight
-   reads as a light leak rather than a raised edge on a dark material. */
-:root[data-theme="dark"] {
-  --color-cream: 27 20 15;
-  --color-surface: 36 26 19;
-  --color-ink: 243 232 218;
-  --color-mute: 183 166 142;
-  --color-clay-amber: 240 151 95;
-  --color-clay-amber-light: 58 39 23;
-  --color-clay-teal: 92 194 184;
-  --color-clay-teal-light: 23 50 47;
-  --color-clay-pink: 244 157 190;
-  --color-clay-pink-light: 58 32 41;
-  --color-clay-lavender: 163 173 223;
-  --color-clay-lavender-light: 38 42 74;
-  --shadow-clay-raised: 8px 8px 20px rgba(0, 0, 0, 0.45), -6px -6px 16px rgba(255, 255, 255, 0.04);
-  --shadow-clay-pressed: inset 4px 4px 10px rgba(0, 0, 0, 0.45), inset -4px -4px 10px rgba(255, 255, 255, 0.04);
-  --spotlight-glow: rgba(255, 255, 255, 0.12);
-}
-
 /* Reserves the scrollbar's own width permanently, so no layout shift occurs
    if any future overlay locks body scroll. */
 html {

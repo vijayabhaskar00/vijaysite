@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import { site } from "@/content/site";
 import PhotoFrame from "@/components/PhotoFrame";
-import Reveal from "@/components/Reveal";
+import Waypoint from "@/components/three/Waypoint";
 import SplitText from "@/components/SplitText";
 import OrgMark from "@/components/OrgMark";
 import Tilt from "@/components/motion/Tilt";
@@ -18,7 +18,7 @@ export const metadata: Metadata = buildMetadata({
 export default function AboutPage() {
   return (
     <section className="grid gap-10 rounded-[2rem] bg-clay-pink-light px-6 py-14 sm:py-20 md:grid-cols-[minmax(0,200px)_1fr] md:items-start md:gap-16">
-      <Reveal>
+      <Waypoint>
         <Tilt>
           <PhotoFrame
             src={site.photo.src}
@@ -29,8 +29,8 @@ export default function AboutPage() {
             className="mx-auto h-40 w-40 md:mx-0 md:h-48 md:w-48"
           />
         </Tilt>
-      </Reveal>
-      <Reveal delayMs={120}>
+      </Waypoint>
+      <Waypoint range={[0.1, 0.4]}>
         <p className="inline-block rounded-full bg-surface px-4 py-1 text-xs font-semibold uppercase tracking-wide text-clay-pink">
           About
         </p>
@@ -58,7 +58,7 @@ export default function AboutPage() {
             ))}
           </div>
         </div>
-      </Reveal>
+      </Waypoint>
     </section>
   );
 }
