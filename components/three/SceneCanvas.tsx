@@ -64,6 +64,7 @@ export default function SceneCanvas({ progress, keyframes, variant, tier }: Scen
   return (
     <div ref={containerRef} className="pointer-events-none fixed inset-0 -z-0" aria-hidden="true">
       <Canvas
+        flat
         frameloop={active ? "demand" : "never"}
         dpr={dpr}
         gl={{ antialias: tier === "full", powerPreference: "high-performance" }}

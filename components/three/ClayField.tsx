@@ -58,22 +58,29 @@ export default function ClayField({ variant, quality, fade }: ClayFieldProps) {
 
   const blobs = useMemo(() => {
     const rand = mulberry32(SEED[variant]);
-    return Array.from({ length: blobCount }, (_, i) => ({
-      position: [
-        (rand() - 0.5) * 16,
-        (rand() - 0.5) * 12,
-        -rand() * 34 - 2,
-      ] as [number, number, number],
-      scale: 0.6 + rand() * 1.8,
-      color: accents[i % accents.length],
-      drift: 0.2 + rand() * 0.5,
-    }));
+    return Array.from({ length: blobCount }, (_, i) => {
+      // Bias away from dead-center on X so blobs frame the content rather
+      // than sit on top of it, and keep them well behind the camera plane.
+      const side = rand() < 0.5 ? -1 : 1;
+      return {
+        position: [
+          side * (5 + rand() * 16),
+          (rand() - 0.5) * 15,
+          -12 - rand() * 34,
+        ] as [number, number, number],
+        scale: 0.5 + rand() * 1.4,
+        color: accents[i % accents.length],
+        drift: 0.2 + rand() * 0.5,
+      };
+    });
   }, [variant, blobCount, accents]);
 
   useFrame((state) => {
     const group = meshes.current;
     if (!group) return;
-    const opacity = fade.get();
+    // Blobs sit behind the content, so keep them subtle -- 0.5 of the
+    // crossfade value is plenty of presence without competing with text.
+    const opacity = fade.get() * 0.5;
     const time = state.clock.elapsedTime;
     group.children.forEach((child, i) => {
       const b = blobs[i];
@@ -86,13 +93,25 @@ export default function ClayField({ variant, quality, fade }: ClayFieldProps) {
 
   return (
     <group>
-      <ambientLight intensity={0.85} color={CLAY.cream} />
-      <directionalLight position={[6, 8, 4]} intensity={0.7} color="#ffffff" />
+      {/* Bright, near-flat lighting so the pale clay tints read true rather
+          than falling into muddy shadow. Tone mapping is disabled on the
+          Canvas (see SceneCanvas) for the same reason. */}
+      <ambientLight intensity={1.4} color={CLAY.cream} />
+      <directionalLight position={[6, 8, 4]} intensity={0.35} color="#ffffff" />
       <group ref={meshes}>
         {blobs.map((b, i) => (
           <mesh key={i} position={b.position} scale={b.scale}>
             <icosahedronGeometry args={[1, 4]} />
-            <meshStandardMaterial color={b.color} roughness={0.9} metalness={0} transparent opacity={1} />
+            <meshStandardMaterial
+              color={b.color}
+              emissive={b.color}
+              emissiveIntensity={0.35}
+              roughness={1}
+              metalness={0}
+              transparent
+              opacity={0.5}
+              depthWrite={false}
+            />
           </mesh>
         ))}
       </group>
