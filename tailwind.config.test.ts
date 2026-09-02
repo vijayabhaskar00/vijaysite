@@ -51,29 +51,6 @@ describe("tailwind design tokens", () => {
     expect(rootVarValue("--color-clay-lavender-light")).toBe("229 230 253"); // #e5e6fd
   });
 
-  it("defines a dark theme override block that re-defines every color and shadow token", () => {
-    const darkBlock = globalsCss.match(/:root\[data-theme="dark"\]\s*\{([^}]*)\}/)?.[1] ?? "";
-    expect(darkBlock).not.toBe("");
-    for (const name of [
-      "--color-cream",
-      "--color-surface",
-      "--color-ink",
-      "--color-mute",
-      "--color-clay-amber",
-      "--color-clay-amber-light",
-      "--color-clay-teal",
-      "--color-clay-teal-light",
-      "--color-clay-pink",
-      "--color-clay-pink-light",
-      "--color-clay-lavender",
-      "--color-clay-lavender-light",
-      "--shadow-clay-raised",
-      "--shadow-clay-pressed",
-    ]) {
-      expect(darkBlock).toContain(`${name}:`);
-    }
-  });
-
   it("defines display/body font families backed by CSS variables", () => {
     const fonts = (config.theme?.extend as any)?.fontFamily;
     expect(fonts.display).toContain("var(--font-display)");
@@ -87,9 +64,5 @@ describe("tailwind design tokens", () => {
     expect(shadow["clay-pressed"]).toBe("var(--shadow-clay-pressed)");
     expect(rootVarValue("--shadow-clay-raised")).toContain("rgba(44, 32, 19, 0.18)");
     expect(rootVarValue("--shadow-clay-pressed")).toContain("inset");
-  });
-
-  it("enables selector-based dark mode keyed off [data-theme=dark]", () => {
-    expect(config.darkMode).toEqual(["selector", '[data-theme="dark"]']);
   });
 });

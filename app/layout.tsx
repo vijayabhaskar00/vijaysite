@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { baloo2, nunito } from "@/lib/fonts";
 import { buildMetadata, personJsonLd } from "@/lib/seo";
-import { themeBootstrapScript } from "@/lib/themeBootstrap";
 import { site } from "@/content/site";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -20,24 +18,8 @@ export const metadata: Metadata = buildMetadata({
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${baloo2.variable} ${nunito.variable}`}
-      // The theme-bootstrap script below sets data-theme on this element
-      // before hydration, which never matches the (theme-less) server
-      // markup -- an expected, intentional mismatch (see that script's
-      // comment), not a real one for React to warn about.
-      suppressHydrationWarning
-    >
+    <html lang="en" className={`${baloo2.variable} ${nunito.variable}`}>
       <body className="flex min-h-screen flex-col bg-cream font-body text-ink">
-        {/* Sets data-theme on <html> before first paint, from a stored
-            choice or (failing that) the OS preference -- beforeInteractive
-            inlines and runs this ahead of hydration, so there is no
-            flash of the wrong theme. See lib/theme.ts for the shared
-            source of this logic and useTheme(), which reads the result. */}
-        <Script id="theme-bootstrap" strategy="beforeInteractive">
-          {themeBootstrapScript()}
-        </Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd()) }}
