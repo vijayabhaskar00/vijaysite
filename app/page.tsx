@@ -3,13 +3,12 @@ import { site, social } from "@/content/site";
 import { employment, credentials, education, type TimelineEntry } from "@/content/experience";
 import HomeHero from "@/components/HomeHero";
 import StatBand from "@/components/StatBand";
-import Reveal from "@/components/Reveal";
 import OrgLogoGrid from "@/components/OrgLogoGrid";
 import OrgMark from "@/components/OrgMark";
 import PhotoFrame from "@/components/PhotoFrame";
 import Tilt from "@/components/motion/Tilt";
 import Magnetic from "@/components/motion/Magnetic";
-import AmbientColorDrift from "@/components/motion/AmbientColorDrift";
+import Waypoint from "@/components/three/Waypoint";
 import { linkClass, navLinkClass, primaryButtonClass } from "@/lib/ui";
 
 const EXPERIENCE_HIGHLIGHTS: TimelineEntry[] = [employment[0], credentials[0], education[0]];
@@ -30,23 +29,24 @@ function ArrowLink({ href, children }: { href: string; children: string }) {
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-12 sm:gap-16">
-      <AmbientColorDrift />
-      <HomeHero />
+      <Waypoint>
+        <HomeHero />
+      </Waypoint>
 
-      <Reveal>
+      <Waypoint range={[0.15, 0.3]}>
         <StatBand />
-      </Reveal>
+      </Waypoint>
 
-      <Reveal>
+      <Waypoint range={[0.3, 0.45]}>
         <p className="inline-block rounded-full bg-clay-amber-light px-4 py-1 text-xs font-semibold uppercase tracking-wide text-clay-amber">
           Affiliations &amp; credentials
         </p>
         <div className="mt-6">
           <OrgLogoGrid />
         </div>
-      </Reveal>
+      </Waypoint>
 
-      <Reveal className="rounded-[2rem] bg-clay-pink-light px-6 py-14 sm:py-20">
+      <Waypoint range={[0.45, 0.6]} className="rounded-[2rem] bg-clay-pink-light px-6 py-14 sm:py-20">
         <div className="grid gap-10 sm:grid-cols-[minmax(0,140px)_1fr] sm:items-center sm:gap-12">
           <Tilt>
             <PhotoFrame
@@ -70,9 +70,9 @@ export default function HomePage() {
             <ArrowLink href="/about">View full profile</ArrowLink>
           </div>
         </div>
-      </Reveal>
+      </Waypoint>
 
-      <Reveal className="rounded-[2rem] bg-clay-teal-light px-6 py-14 sm:py-20">
+      <Waypoint range={[0.6, 0.75]} className="rounded-[2rem] bg-clay-teal-light px-6 py-14 sm:py-20">
         <p className="inline-block rounded-full bg-surface px-4 py-1 text-xs font-semibold uppercase tracking-wide text-clay-teal">
           02 · Experience
         </p>
@@ -98,9 +98,9 @@ export default function HomePage() {
           </ol>
         </div>
         <ArrowLink href="/experience">View full timeline</ArrowLink>
-      </Reveal>
+      </Waypoint>
 
-      <Reveal className="rounded-[2rem] bg-clay-lavender-light px-6 py-14 text-center sm:py-20">
+      <Waypoint range={[0.78, 0.92]} className="rounded-[2rem] bg-clay-lavender-light px-6 py-14 text-center sm:py-20">
         <Tilt className="mx-auto inline-block">
           <PhotoFrame
             src={site.photo.src}
@@ -133,7 +133,7 @@ export default function HomePage() {
           ))}
         </ul>
         <ArrowLink href="/contact">View full contact</ArrowLink>
-      </Reveal>
+      </Waypoint>
     </div>
   );
 }
