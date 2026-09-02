@@ -16,6 +16,15 @@ describe("getSceneForPath", () => {
     expect(scene.keyframes).toEqual([]);
   });
 
+  it("maps the 404 path shape to a drift scene", () => {
+    expect(getSceneForPath("/404").variant).toBe("drift");
+  });
+
+  it("experience has a mid keyframe so the camera banks past the timeline", () => {
+    const ats = getSceneForPath("/experience").keyframes.map((k) => k.at);
+    expect(ats.some((a) => a > 0.3 && a < 0.7)).toBe(true);
+  });
+
   it("every registered scene has keyframes sorted and spanning 0..1 (except drift)", () => {
     for (const path of ["/", "/about", "/experience", "/contact"]) {
       const { keyframes } = getSceneForPath(path);

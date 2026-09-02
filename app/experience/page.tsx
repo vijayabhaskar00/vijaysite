@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import { employment, credentials, education, type TimelineEntry } from "@/content/experience";
-import Reveal from "@/components/Reveal";
+import Waypoint from "@/components/three/Waypoint";
 import OrgMark from "@/components/OrgMark";
 import SplitText from "@/components/SplitText";
+
+// The experience camera banks right / left / right down the timeline;
+// nudge each block the opposite way (md+ only) so it faces the camera.
+const SECTION_RANGES: [number, number][] = [
+  [0.05, 0.33],
+  [0.36, 0.64],
+  [0.67, 0.95],
+];
+const SECTION_OFFSET = ["md:translate-x-6", "md:-translate-x-6", "md:translate-x-6"];
 
 export const metadata: Metadata = buildMetadata({
   title: "Experience",
@@ -80,9 +89,12 @@ export default function ExperiencePage() {
       </h1>
       {sections.map((section, index) => (
         <div key={section.title} className={index === 0 ? "mt-12" : "mt-16"}>
-          <Reveal delayMs={index * 80}>
+          <Waypoint
+            range={SECTION_RANGES[index]}
+            className={`transition-transform ${SECTION_OFFSET[index]}`}
+          >
             <Timeline title={section.title} entries={section.entries} />
-          </Reveal>
+          </Waypoint>
         </div>
       ))}
     </section>

@@ -31,6 +31,19 @@ const SEED: Record<SceneVariant, number> = {
   drift: 99,
 };
 
+// Per-route layout so each scene reads as its own place: how far blobs
+// spread sideways, how deep the field runs, and a density multiplier.
+const VARIANT_LAYOUT: Record<
+  SceneVariant,
+  { spreadX: number; spreadY: number; depth: number; countScale: number }
+> = {
+  home: { spreadX: 16, spreadY: 15, depth: 34, countScale: 1 },
+  about: { spreadX: 11, spreadY: 12, depth: 26, countScale: 0.8 },
+  experience: { spreadX: 20, spreadY: 26, depth: 46, countScale: 1.1 }, // long corridor
+  contact: { spreadX: 8, spreadY: 8, depth: 16, countScale: 0.6 }, // small room
+  drift: { spreadX: 12, spreadY: 12, depth: 24, countScale: 0.7 },
+};
+
 function mulberry32(seed: number) {
   return () => {
     seed |= 0;
@@ -53,7 +66,8 @@ interface ClayFieldProps {
  * material opacity for the route crossfade. Runs inside <Canvas>. */
 export default function ClayField({ variant, quality, fade }: ClayFieldProps) {
   const meshes = useRef<THREE.Group>(null);
-  const blobCount = quality === "full" ? 14 : 7;
+  const layout = VARIANT_LAYOUT[variant];
+  const blobCount = Math.round((quality === "full" ? 14 : 7) * layout.countScale);
   const accents = VARIANT_ACCENT[variant];
 
   const blobs = useMemo(() => {
@@ -64,16 +78,16 @@ export default function ClayField({ variant, quality, fade }: ClayFieldProps) {
       const side = rand() < 0.5 ? -1 : 1;
       return {
         position: [
-          side * (5 + rand() * 16),
-          (rand() - 0.5) * 15,
-          -12 - rand() * 34,
+          side * (5 + rand() * layout.spreadX),
+          (rand() - 0.5) * layout.spreadY,
+          -12 - rand() * layout.depth,
         ] as [number, number, number],
         scale: 0.5 + rand() * 1.4,
         color: accents[i % accents.length],
         drift: 0.2 + rand() * 0.5,
       };
     });
-  }, [variant, blobCount, accents]);
+  }, [variant, blobCount, accents, layout]);
 
   useFrame((state) => {
     const group = meshes.current;

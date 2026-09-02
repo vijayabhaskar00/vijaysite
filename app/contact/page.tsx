@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import { site, social } from "@/content/site";
 import { navLinkClass, primaryButtonClass } from "@/lib/ui";
-import Reveal from "@/components/Reveal";
+import Waypoint from "@/components/three/Waypoint";
 import SplitText from "@/components/SplitText";
 import PhotoFrame from "@/components/PhotoFrame";
 import Magnetic from "@/components/motion/Magnetic";
@@ -17,7 +17,7 @@ export const metadata: Metadata = buildMetadata({
 export default function ContactPage() {
   return (
     <section className="max-w-2xl rounded-[2rem] bg-clay-lavender-light px-6 py-14 sm:py-20">
-      <Reveal>
+      <Waypoint>
         <div className="grid gap-8 sm:grid-cols-[minmax(0,120px)_1fr] sm:items-center">
           <Tilt>
             <PhotoFrame
@@ -44,8 +44,8 @@ export default function ContactPage() {
             </p>
           </div>
         </div>
-      </Reveal>
-      <Reveal delayMs={120}>
+      </Waypoint>
+      <Waypoint range={[0.2, 0.7]}>
         <ul aria-label="Social links" className="mt-10 flex list-none flex-wrap gap-2 p-0 pt-8">
           {social.map((item) => (
             <li key={item.href}>
@@ -57,7 +57,7 @@ export default function ContactPage() {
             </li>
           ))}
         </ul>
-      </Reveal>
+      </Waypoint>
     </section>
   );
 }
