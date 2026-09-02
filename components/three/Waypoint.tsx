@@ -1,37 +1,42 @@
 "use client";
 
-import { motion, useTransform } from "framer-motion";
-import { useEffect, useState, type ReactNode } from "react";
-import { useScene } from "@/lib/scene";
+import { motion } from "framer-motion";
+import type { ReactNode } from "react";
+import { useCanAnimate, EASE } from "@/lib/motion";
 
 interface WaypointProps {
   children: ReactNode;
-  /** Scroll-progress window (0..1) over which this section settles in.
-   * Default [0, 0] = always settled (hero). */
+  /** Kept for call-site compatibility; the reveal is viewport-triggered
+   * (below), so an explicit scroll window is no longer needed. */
   range?: [number, number];
   className?: string;
 }
 
-/** Wraps a page section so it fades/rises into place as the camera passes
- * its point in the scroll. SSR-safe by construction: no live style until
- * after mount (useEffect never runs server-side), and no transform at all
- * on the static tier -- before mount / on static the element is a plain
- * div in normal flow, so nothing is ever hidden-until-JS. */
-export default function Waypoint({ children, range = [0, 0], className }: WaypointProps) {
-  const { scrollProgress, tier } = useScene();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+const variants = {
+  hidden: { opacity: 0, y: 48 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
+};
 
-  const [start, end] = range;
-  const mid = end > start ? (start + end) / 2 : start;
-  const settleAt = Math.max(mid, start + 0.0001);
-  const opacity = useTransform(scrollProgress, [start, settleAt], [0, 1]);
-  const y = useTransform(scrollProgress, [start, settleAt], [48, 0]);
+/** Wraps a page section so it rises and fades into place the first time it
+ * scrolls into view -- which, because the camera is scroll-driven, is when
+ * the camera is passing that section. Same no-JS/crawler-safe and
+ * reduced-motion contract as components/Reveal.tsx (shared useCanAnimate
+ * gate): a plain div until animation is confirmed safe. */
+export default function Waypoint({ children, className }: WaypointProps) {
+  const canAnimate = useCanAnimate();
 
-  const animate = mounted && tier !== "static" && end > start;
+  if (!canAnimate) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
-    <motion.div className={className} style={animate ? { opacity, y } : undefined}>
+    <motion.div
+      className={className}
+      variants={variants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2, margin: "0px 0px -10% 0px" }}
+    >
       {children}
     </motion.div>
   );

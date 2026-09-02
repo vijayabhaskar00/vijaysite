@@ -5,14 +5,15 @@ import Waypoint from "@/components/three/Waypoint";
 import OrgMark from "@/components/OrgMark";
 import SplitText from "@/components/SplitText";
 
-// The experience camera banks right / left / right down the timeline;
-// nudge each block the opposite way (md+ only) so it faces the camera.
+// Generous, overlapping windows so each block is settled before it reaches
+// viewport-centre. The camera does the left/right banking past each block
+// (see routeScenes.ts); the DOM blocks stay in the normal column so their
+// Waypoint transform never fights a CSS transform class.
 const SECTION_RANGES: [number, number][] = [
-  [0.05, 0.33],
-  [0.36, 0.64],
-  [0.67, 0.95],
+  [0, 0.22],
+  [0.12, 0.45],
+  [0.3, 0.62],
 ];
-const SECTION_OFFSET = ["md:translate-x-6", "md:-translate-x-6", "md:translate-x-6"];
 
 export const metadata: Metadata = buildMetadata({
   title: "Experience",
@@ -89,10 +90,7 @@ export default function ExperiencePage() {
       </h1>
       {sections.map((section, index) => (
         <div key={section.title} className={index === 0 ? "mt-12" : "mt-16"}>
-          <Waypoint
-            range={SECTION_RANGES[index]}
-            className={`transition-transform ${SECTION_OFFSET[index]}`}
-          >
+          <Waypoint range={SECTION_RANGES[index]}>
             <Timeline title={section.title} entries={section.entries} />
           </Waypoint>
         </div>
