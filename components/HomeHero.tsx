@@ -2,7 +2,7 @@
 
 import { useRef, type PointerEvent } from "react";
 import Link from "next/link";
-import { motion, useMotionValue, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
+import { motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
 import { site, orgNames } from "@/content/site";
 import PhotoFrame from "@/components/PhotoFrame";
 import Marquee from "@/components/Marquee";
@@ -13,51 +13,12 @@ import { useCanAnimate, fadeUpItem, staggerContainer, POINTER_SPRING } from "@/l
 import { primaryButtonClass } from "@/lib/ui";
 
 // How far each hero layer drifts from the pointer's center-relative
-// position, in px -- the blob (purely decorative) moves the most, the
-// photo a middle amount, the heading text the least, so hovering the hero
-// reads as real depth rather than one flat scene sliding as a unit.
-const BLOB_DEPTH = 18;
+// position, in px -- the photo moves more than the heading text, so
+// hovering the hero reads as real depth rather than one flat scene sliding
+// as a unit. The scene behind the hero is now the site-wide 3D ClayField
+// (see components/three/), so there is no decorative SVG layer here.
 const PHOTO_DEPTH = 10;
 const HEADING_DEPTH = 4;
-
-interface ParallaxProps {
-  parallaxX: MotionValue<number>;
-  parallaxY: MotionValue<number>;
-}
-
-/** Two overlapping soft blobs behind the hero portrait -- the clay
- * illustration that replaces the removed Three.js flythrough canvas. Pure
- * decoration (aria-hidden), so it carries no content of its own. Drifts
- * subtly as the page scrolls past the hero (scroll-linked) and as the
- * pointer moves across the hero (parallaxX/parallaxY, from the parent's
- * shared pointer spring) -- inert entirely under reduced motion, since the
- * style is only attached when useCanAnimate() is true. */
-function ClayBlobBackdrop({ parallaxX, parallaxY }: ParallaxProps) {
-  const canAnimate = useCanAnimate();
-  const { scrollY } = useScroll();
-  const scrollDriftY = useTransform(scrollY, [0, 600], [0, 40]);
-  const scale = useTransform(scrollY, [0, 600], [1, 1.08]);
-  const y = useTransform([scrollDriftY, parallaxY], ([drift, pointer]: number[]) => drift + pointer);
-
-  return (
-    <motion.svg
-      aria-hidden="true"
-      viewBox="0 0 400 400"
-      className="pointer-events-none absolute -right-12 -top-12 -z-10 h-40 w-40 opacity-90 sm:-right-14 sm:-top-14 sm:h-48 sm:w-48 lg:-right-16 lg:-top-16 lg:h-56 lg:w-56"
-      style={canAnimate ? { x: parallaxX, y, scale } : undefined}
-    >
-      <path
-        className="fill-clay-amber-light"
-        d="M281,305Q246,360,183,347Q120,334,88,281Q56,228,80,169Q104,110,163,86Q222,62,272,101Q322,140,323,199Q324,258,281,305Z"
-      />
-      <path
-        className="fill-clay-pink-light"
-        opacity="0.8"
-        d="M255,120Q270,180,235,220Q200,260,150,245Q100,230,90,175Q80,120,125,90Q170,60,215,80Q260,100,255,120Z"
-      />
-    </motion.svg>
-  );
-}
 
 export default function HomeHero() {
   const canAnimate = useCanAnimate();
@@ -71,8 +32,6 @@ export default function HomeHero() {
   const springX = useSpring(pointerX, POINTER_SPRING);
   const springY = useSpring(pointerY, POINTER_SPRING);
 
-  const blobX = useTransform(springX, (value) => value * BLOB_DEPTH);
-  const blobY = useTransform(springY, (value) => value * BLOB_DEPTH);
   const photoX = useTransform(springX, (value) => value * PHOTO_DEPTH);
   const photoY = useTransform(springY, (value) => value * PHOTO_DEPTH);
   const headingX = useTransform(springX, (value) => value * HEADING_DEPTH);
@@ -158,7 +117,6 @@ export default function HomeHero() {
     return (
       <>
         <section className="relative overflow-hidden pt-16 sm:pt-24 md:pt-32">
-          <ClayBlobBackdrop parallaxX={blobX} parallaxY={blobY} />
           {pill}
           {heading}
           {descriptionRow}
@@ -177,7 +135,6 @@ export default function HomeHero() {
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
       >
-        <ClayBlobBackdrop parallaxX={blobX} parallaxY={blobY} />
         <motion.div style={{ y: exitY, opacity: exitOpacity, scale: exitScale }}>
           <motion.div variants={fadeUpItem}>{pill}</motion.div>
           <motion.div variants={fadeUpItem} style={{ x: headingX }}>
