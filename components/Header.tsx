@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { nav, site } from "@/content/site";
 import Magnetic from "@/components/motion/Magnetic";
+import SunMark from "@/components/SunMark";
 import { navLinkClass } from "@/lib/ui";
 import { useCanAnimate } from "@/lib/motion";
 
@@ -31,8 +32,9 @@ export default function Header() {
         <Magnetic>
           <Link
             href="/"
-            className="inline-block rounded-full px-2 py-1 font-display text-2xl font-extrabold text-ink transition-colors duration-300 hover:text-clay-amber focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clay-amber/40"
+            className="group inline-flex items-center gap-2.5 rounded-full px-2 py-1 font-display text-2xl font-extrabold text-ink transition-colors duration-300 hover:text-clay-amber focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clay-amber/40"
           >
+            <SunMark className="h-7 w-7 shrink-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:rotate-[18deg]" />
             {site.shortName}
           </Link>
         </Magnetic>
